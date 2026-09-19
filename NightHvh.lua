@@ -1,4 +1,4 @@
--- ⚡ NightHvH Menu ⚡
+-- ⚡ NightHvH Menu v7 ⚡
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
 local Workspace=game:GetService("Workspace")
@@ -54,79 +54,6 @@ mainGrad.Color=ColorSequence.new({
     ColorSequenceKeypoint.new(1,Color3.fromRGB(8,8,10))
 })
 mainGrad.Rotation=90
-
-local SnowLayer=Instance.new("Frame",M)
-SnowLayer.Size=UDim2.new(1,0,1,0)
-SnowLayer.BackgroundTransparency=1
-SnowLayer.ClipsDescendants=true
-SnowLayer.ZIndex=1
-SnowLayer.Parent=M
-
-local snowflakes={}
-local SNOW_COUNT=60
-
-for i=1,SNOW_COUNT do
-    local container=Instance.new("Frame",SnowLayer)
-    local cs=math.random(6,10)
-    container.Size=UDim2.new(0,cs,0,cs)
-    container.BackgroundTransparency=1
-    container.BorderSizePixel=0
-    container.ZIndex=1
-    container.Rotation=math.random(0,360)
-    
-    local function addLine(sizeX,sizeY,posX,posY,rot)
-        local line=Instance.new("Frame",container)
-        line.Size=UDim2.new(0,sizeX,0,sizeY)
-        line.Position=UDim2.new(0.5,posX,0.5,posY)
-        line.AnchorPoint=Vector2.new(0.5,0.5)
-        line.BackgroundColor3=Color3.fromRGB(240,245,255)
-        line.BackgroundTransparency=math.random(20,50)/100
-        line.BorderSizePixel=0
-        line.Rotation=rot
-        line.ZIndex=1
-        Instance.new("UICorner",line).CornerRadius=UDim.new(0.5,0)
-    end
-    
-    addLine(1,cs,0,0,0)
-    addLine(cs,1,0,0,0)
-    addLine(1,cs,0,0,45)
-    addLine(1,cs,0,0,-45)
-    addLine(1,cs*0.5,-cs*0.25,0,0)
-    addLine(1,cs*0.5,cs*0.25,0,0)
-    
-    container.Position=UDim2.new(math.random(0,1000)/1000,-cs/2,math.random(-100,100)/100,-cs/2)
-    
-    table.insert(snowflakes,{
-        obj=container, cs=cs,
-        speed=math.random(15,28)/10,
-        drift=math.random(-5,5)/200,
-        wobble=math.random(0,628)/100,
-        wobbleSpeed=math.random(15,35)/1000,
-        rotSpeed=math.random(-15,15)/100,
-    })
-end
-
-RunService.RenderStepped:Connect(function()
-    if not M.Visible then return end
-    local mSize=M.AbsoluteSize
-    for _,s in ipairs(snowflakes) do
-        local obj=s.obj
-        if not obj or not obj.Parent then continue end
-        s.wobble=s.wobble+s.wobbleSpeed
-        local wobbleX=math.sin(s.wobble)*6
-        local pos=obj.Position
-        local newY=pos.Y.Offset+s.speed
-        local newX=pos.X.Offset+s.drift+wobbleX*0.05
-        if newY>mSize.Y then
-            newY=-s.cs
-            newX=math.random(s.cs,mSize.X-s.cs)
-        end
-        if newX<0 then newX=0 end
-        if newX>mSize.X-s.cs then newX=mSize.X-s.cs end
-        obj.Position=UDim2.new(0,newX,0,newY)
-        obj.Rotation=obj.Rotation+s.rotSpeed
-    end
-end)
 
 local Header=Instance.new("Frame",M)
 Header.Size=UDim2.new(1,0,0,50)
@@ -333,7 +260,7 @@ UIS.InputBegan:Connect(function(input,gp)
         end
     end
 end)
--- ===== ВКЛАДКИ =====
+-- ===== ЧАСТЬ 2 =====
 local Tabs={"Rage","Visuals","Misc","Cfg"}
 local tabButtons={}
 local tabFrames={}
@@ -342,9 +269,8 @@ local activeBtn,activeFrame=nil,nil
 local function SwitchTab(name,btn,frame)
     if activeBtn==btn then return end
     if activeBtn then
-        TweenService:Create(activeBtn,TweenInfo.new(0.15),{
-            BackgroundColor3=Color3.fromRGB(26,26,32),
-            BackgroundTransparency=0.2}):Play()
+        activeBtn.BackgroundColor3=Color3.fromRGB(26,26,32)
+        activeBtn.BackgroundTransparency=0.2
         local ol=activeBtn:FindFirstChild("Lbl")
         if ol then ol.TextColor3=GREY_D end
         local ol2=activeBtn:FindFirstChild("Line")
@@ -352,19 +278,15 @@ local function SwitchTab(name,btn,frame)
     end
     if activeFrame then activeFrame.Visible=false end
     activeBtn=btn
-    TweenService:Create(btn,TweenInfo.new(0.2),{
-        BackgroundColor3=Color3.fromRGB(38,38,48),
-        BackgroundTransparency=0}):Play()
+    btn.BackgroundColor3=Color3.fromRGB(38,38,48)
+    btn.BackgroundTransparency=0
     local nl=btn:FindFirstChild("Lbl")
     if nl then nl.TextColor3=GREY_L end
     local nl2=btn:FindFirstChild("Line")
     if nl2 then nl2.Visible=true end
     activeFrame=frame
     if activeFrame then activeFrame.Visible=true end
-    TweenService:Create(TabTitle,TweenInfo.new(0.15),{TextTransparency=1}):Play()
-    task.wait(0.15)
     TabTitle.Text=name
-    TweenService:Create(TabTitle,TweenInfo.new(0.15),{TextTransparency=0}):Play()
 end
 
 for i,name in ipairs(Tabs) do
@@ -375,6 +297,7 @@ for i,name in ipairs(Tabs) do
     btn.Text="" btn.BorderSizePixel=0 btn.AutoButtonColor=false
     btn.ZIndex=11
     Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
+    
     local line=Instance.new("Frame",btn)
     line.Name="Line"
     line.Size=UDim2.new(0,3,0.55,0)
@@ -385,6 +308,7 @@ for i,name in ipairs(Tabs) do
     line.Visible=false
     line.ZIndex=12
     Instance.new("UICorner",line).CornerRadius=UDim.new(1,0)
+    
     local lbl=Instance.new("TextLabel",btn)
     lbl.Name="Lbl"
     lbl.Size=UDim2.new(1,0,1,0)
@@ -395,16 +319,18 @@ for i,name in ipairs(Tabs) do
     lbl.TextSize=14
     lbl.TextXAlignment=Enum.TextXAlignment.Center
     lbl.ZIndex=12
+    
     btn.MouseEnter:Connect(function()
         if activeBtn~=btn then
-            TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.05}):Play()
+            btn.BackgroundTransparency=0.05
         end
     end)
     btn.MouseLeave:Connect(function()
         if activeBtn~=btn then
-            TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.2}):Play()
+            btn.BackgroundTransparency=0.2
         end
     end)
+    
     local frame=Instance.new("ScrollingFrame",ContentArea)
     frame.Size=UDim2.new(1,0,1,0)
     frame.BackgroundTransparency=1
@@ -415,17 +341,19 @@ for i,name in ipairs(Tabs) do
     frame.AutomaticCanvasSize=Enum.AutomaticSize.Y
     frame.Visible=false
     frame.ZIndex=11
+    
     local layout=Instance.new("UIListLayout",frame)
     layout.Padding=UDim.new(0,8)
     layout.SortOrder=Enum.SortOrder.LayoutOrder
+    
     local pad=Instance.new("UIPadding",frame)
     pad.PaddingRight=UDim.new(0,8)
+    
     tabFrames[name]=frame
     tabButtons[i]=btn
     btn.MouseButton1Click:Connect(function() SwitchTab(name,btn,frame) end)
 end
 
--- ===== ЭЛЕМЕНТЫ =====
 local function Desc(parent,text)
     local d=Instance.new("TextLabel",parent)
     d.Size=UDim2.new(1,0,0,16)
@@ -445,6 +373,7 @@ local function Toggle(parent,text,default,cb)
     b.BackgroundTransparency=0.4
     b.Text="" b.AutoButtonColor=false
     Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
+    
     local l=Instance.new("TextLabel",b)
     l.Size=UDim2.new(1,-50,1,0)
     l.Position=UDim2.new(0,12,0,0)
@@ -454,26 +383,37 @@ local function Toggle(parent,text,default,cb)
     l.Font=Enum.Font.GothamMedium
     l.TextSize=13
     l.TextXAlignment=Enum.TextXAlignment.Left
+    
     local ind=Instance.new("Frame",b)
     ind.Size=UDim2.new(0,30,0,14)
     ind.Position=UDim2.new(1,-42,0.5,-7)
     ind.BackgroundColor3=default and Color3.fromRGB(90,90,100) or Color3.fromRGB(40,40,48)
     Instance.new("UICorner",ind).CornerRadius=UDim.new(1,0)
+    
     local dot=Instance.new("Frame",ind)
     dot.Size=UDim2.new(0,10,0,10)
     dot.Position=default and UDim2.new(1,-12,0.5,-5) or UDim2.new(0,2,0.5,-5)
     dot.BackgroundColor3=GREY_L
     Instance.new("UICorner",dot).CornerRadius=UDim.new(1,0)
+    
     local state=default
-    local function apply(s)
-        ind.BackgroundColor3=s and Color3.fromRGB(90,90,100) or Color3.fromRGB(40,40,48)
-        dot.Position=s and UDim2.new(1,-12,0.5,-5) or UDim2.new(0,2,0.5,-5)
-        l.TextColor3=s and GREY_L or GREY_M
+    
+    local function update()
+        if state then
+            ind.BackgroundColor3=Color3.fromRGB(90,90,100)
+            dot.Position=UDim2.new(1,-12,0.5,-5)
+            l.TextColor3=GREY_L
+        else
+            ind.BackgroundColor3=Color3.fromRGB(40,40,48)
+            dot.Position=UDim2.new(0,2,0.5,-5)
+            l.TextColor3=GREY_M
+        end
     end
-    apply(state)
+    update()
+    
     b.MouseButton1Click:Connect(function()
         state=not state
-        apply(state)
+        update()
         if cb then cb(state) end
     end)
 end
@@ -484,6 +424,7 @@ local function Slider(parent,text,mn,mx,dv,cb)
     f.BackgroundColor3=BG2
     f.BackgroundTransparency=0.4
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
+    
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,0,20)
     l.Position=UDim2.new(0,12,0,2)
@@ -493,25 +434,37 @@ local function Slider(parent,text,mn,mx,dv,cb)
     l.Font=Enum.Font.GothamMedium
     l.TextSize=12
     l.TextXAlignment=Enum.TextXAlignment.Left
+    
     local b=Instance.new("Frame",f)
     b.Size=UDim2.new(1,-24,0,4)
     b.Position=UDim2.new(0,12,1,-12)
     b.BackgroundColor3=Color3.fromRGB(35,35,42)
     Instance.new("UICorner",b).CornerRadius=UDim.new(1,0)
+    
     local fl=Instance.new("Frame",b)
     local ip=(dv-mn)/(mx-mn)
     fl.Size=UDim2.new(ip,0,1,0)
     fl.BackgroundColor3=PU
     Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
+    
     local bt=Instance.new("TextButton",b)
     bt.Size=UDim2.new(0,18,0,18)
     bt.Position=UDim2.new(ip,-9,0.5,-9)
     bt.BackgroundColor3=Color3.fromRGB(220,200,255)
     bt.Text=""
     Instance.new("UICorner",bt).CornerRadius=UDim.new(1,0)
+    
     local dr=false
-    bt.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dr=true end end)
-    UIS.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dr=false end end)
+    bt.InputBegan:Connect(function(i)
+        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
+            dr=true
+        end
+    end)
+    UIS.InputEnded:Connect(function(i)
+        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
+            dr=false
+        end
+    end)
     UIS.InputChanged:Connect(function(i)
         if dr and (i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseMovement) then
             local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
@@ -559,38 +512,37 @@ local function TextBox(parent,placeholder)
     return tb
 end
 
--- ===== НАПОЛНЕНИЕ RAGE =====
-Desc(tabFrames["Rage"],"Silent Aim — направляет пули в голову врага в FOV")
+Desc(tabFrames["Rage"],"Silent Aim — стрельба в голову врага в FOV")
 Toggle(tabFrames["Rage"],"Silent Aim",Config.SilentAim,function(v) Config.SilentAim=v end)
 Desc(tabFrames["Rage"],"FOV — радиус поиска врага")
 Slider(tabFrames["Rage"],"FOV",20,400,Config.FOV,function(v) Config.FOV=v end)
 Desc(tabFrames["Rage"],"Wallbang — стрельба через стены")
 Toggle(tabFrames["Rage"],"Wallbang",Config.Wallbang,function(v) Config.Wallbang=v end)
 
--- ===== НАПОЛНЕНИЕ VISUALS =====
 Desc(tabFrames["Visuals"],"Bullet Tracers — фиолетовые трассеры")
 Toggle(tabFrames["Visuals"],"Bullet Tracers",Config.Tracers,function(v) Config.Tracers=v end)
-Desc(tabFrames["Visuals"],"ESP — боксы + имена врагов")
+Desc(tabFrames["Visuals"],"ESP — боксы + имена")
 Toggle(tabFrames["Visuals"],"ESP",Config.ESP,function(v) Config.ESP=v end)
 Desc(tabFrames["Visuals"],"Third Person — вид от 3-го лица")
 Toggle(tabFrames["Visuals"],"Third Person",Config.ThirdPerson,function(v) Config.ThirdPerson=v end)
 Slider(tabFrames["Visuals"],"Cam Distance",5,20,Config.CamDist,function(v) Config.CamDist=v end)
-Desc(tabFrames["Visuals"],"Hitbox — увеличение головы")
+Desc(tabFrames["Visuals"],"Hitbox — прозрачная голова")
 Toggle(tabFrames["Visuals"],"Hitbox Expander",Config.Hitbox,function(v) Config.Hitbox=v end)
 Slider(tabFrames["Visuals"],"Hitbox Size",1,16,Config.HitboxSize,function(v) Config.HitboxSize=v end)
 Desc(tabFrames["Visuals"],"Night — ночное небо")
 Toggle(tabFrames["Visuals"],"Night",Config.Night,function(v) Config.Night=v SetNight(v) end)
-Desc(tabFrames["Visuals"],"Custom Scope — свой прицел вместо стандартного")
+Desc(tabFrames["Visuals"],"Custom Scope — свой прицел")
 Toggle(tabFrames["Visuals"],"Custom Scope",Config.CustomScope,function(v) Config.CustomScope=v end)
 
--- ===== НАПОЛНЕНИЕ MISC =====
-Desc(tabFrames["Misc"],"Spinbot — быстрое вращение персонажа")
+Desc(tabFrames["Misc"],"Spinbot — вращение персонажа")
 Toggle(tabFrames["Misc"],"Spinbot",Config.Spinbot,function(v) Config.Spinbot=v end)
 Desc(tabFrames["Misc"],"Hit Sound — звук попадания")
 Toggle(tabFrames["Misc"],"Hit Sound",Config.Sound,function(v) Config.Sound=v end)
--- ===== ФУНКЦИИ =====
 
--- Silent Aim через BulletModule
+SwitchTab(Tabs[1],tabButtons[1],tabFrames[Tabs[1]])
+-- ===== ЧАСТЬ 3 =====
+
+-- Silent Aim
 local RaycastModule,BulletModule,GetRayIgnore
 pcall(function()
     RaycastModule=require(RS:WaitForChild("Shared",5):WaitForChild("Raycast",5))
@@ -755,7 +707,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== TRACERS =====
+-- Tracers
 local lastTracer=0
 local function CreateTracer(s,e)
     local d=(s-e).Magnitude
@@ -776,8 +728,7 @@ local function CreateTracer(s,e)
     glow.Material=Enum.Material.Neon
     glow.Color=PU glow.Transparency=0.75
     glow.Size=Vector3.new(d,0.18,0.18)
-    glow.CFrame=core.CFrame
-    glow.Shape=Enum.PartType.Cylinder
+    glow.CFrame=core.CFrame    glow.Shape=Enum.PartType.Cylinder
     glow.Parent=model
     model.Parent=Workspace
     local imp=Instance.new("Part")
@@ -840,7 +791,7 @@ oldNC=hookmetamethod(game,"__namecall",function(self,...)
     return oldNC(self,...)
 end)
 
--- ===== LOOPS =====
+-- Loops
 RunService.RenderStepped:Connect(function()
     if Config.Spinbot then
         local c=LP.Character
@@ -885,7 +836,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ===== NIGHT =====
+-- Night
 local NightSky
 function SetNight(on)
     if on then
@@ -922,7 +873,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ===== ESP =====
+-- ESP
 local Cont=CoreGui:FindFirstChild("ESPGui") or Instance.new("ScreenGui")
 Cont.Name="ESPGui" Cont.ResetOnSpawn=false Cont.DisplayOrder=9999 Cont.Parent=CoreGui
 local EspObj={}
@@ -968,7 +919,7 @@ end
 for _,p in pairs(Players:GetPlayers()) do ESP(p) end
 Players.PlayerAdded:Connect(ESP)
 
--- ===== CUSTOM SCOPE =====
+-- Custom Scope
 task.spawn(function()
     local CustomScope=CoreGui:FindFirstChild("CustomScopeGui")
     if not CustomScope then
@@ -1072,6 +1023,4 @@ task.spawn(function()
     end)
 end)
 
--- ===== СТАРТ =====
-SwitchTab(Tabs[1],tabButtons[1],tabFrames[Tabs[1]])
 print("✅ NightHvH Menu загружено!")
