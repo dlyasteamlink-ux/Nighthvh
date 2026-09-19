@@ -1,22 +1,21 @@
--- ⚡ NightHvH Menu ⚡
-local Players=game:GetService("Players")
-local RunService=game:GetService("RunService")
-local Workspace=game:GetService("Workspace")
-local TweenService=game:GetService("TweenService")
-local Debris=game:GetService("Debris")
-local CoreGui=game:GetService("CoreGui")
-local UIS=game:GetService("UserInputService")
-local Lighting=game:GetService("Lighting")
-local RS=game:GetService("ReplicatedStorage")
-local LP=Players.LocalPlayer
-local Camera=Workspace.CurrentCamera
+-- NIGHTFALL GUI
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UIS = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local Debris = game:GetService("Debris")
+local RS = game:GetService("ReplicatedStorage")
+local LP = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
 
 local Config={
     SilentAim=false, FOV=150, Wallbang=false,
     Tracers=false, ESP=false, ThirdPerson=false, CamDist=11,
     Hitbox=false, HitboxSize=2, Night=false, CustomScope=true,
     Atmosphere=false, ATMDensity=40,
-    Optimization=false,
     Spinbot=false, HitSound=false, SoundId="rbxassetid://4817809188",
 }
 
@@ -30,105 +29,257 @@ local OldLighting={
 
 local PU=Color3.fromRGB(160,50,255)
 local WH=Color3.fromRGB(255,255,255)
-local BG1=Color3.fromRGB(10,10,12)
-local BG2=Color3.fromRGB(18,18,22)
-local BG3=Color3.fromRGB(26,26,32)
-local GL=Color3.fromRGB(230,230,235)
-local GM=Color3.fromRGB(150,150,160)
-local GD=Color3.fromRGB(80,80,90)
-local LN=Color3.fromRGB(40,40,48)
+local GL=Color3.fromRGB(240,240,240)
+local GM=Color3.fromRGB(140,140,140)
+local GD=Color3.fromRGB(90,90,90)
 
--- ===== MENU =====
-local sg=Instance.new("ScreenGui")
-sg.Name="NightHvH" sg.ResetOnSpawn=false sg.IgnoreGuiInset=true sg.DisplayOrder=999999
-sg.Parent=CoreGui
+local function GetContainer()
+    local success, result = pcall(function()
+        if gethui then return gethui() end
+        if syn and syn.protect_gui then return CoreGui end
+        return LP:FindFirstChildOfClass("PlayerGui") or CoreGui
+    end)
+    return success and result or CoreGui
+end
 
-local M=Instance.new("Frame",sg)
-M.Size=UDim2.new(0,700,0,450)
-M.Position=UDim2.new(0.5,-350,0.5,-225)
-M.BackgroundColor3=BG1 M.BorderSizePixel=0 M.ClipsDescendants=true M.Active=true
-Instance.new("UICorner",M).CornerRadius=UDim.new(0,16)
+local TargetContainer = GetContainer()
+if TargetContainer:FindFirstChild("NightFallWexsideUI") then
+    TargetContainer.NightFallWexsideUI:Destroy()
+end
 
-local Header=Instance.new("Frame",M)
-Header.Size=UDim2.new(1,0,0,50)
-Header.BackgroundColor3=BG2 Header.BorderSizePixel=0 Header.ZIndex=10 Header.Parent=M
-Instance.new("UICorner",Header).CornerRadius=UDim.new(0,16)
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "NightFallWexsideUI"
+Gui.Parent = TargetContainer
+Gui.ResetOnSpawn = false
 
-local Logo=Instance.new("TextLabel",Header)
-Logo.Size=UDim2.new(0,200,1,0)
-Logo.Position=UDim2.new(0,25,0,0)
-Logo.BackgroundTransparency=1
-Logo.Text="NightHvH"
-Logo.TextColor3=GL
-Logo.Font=Enum.Font.GothamBold
-Logo.TextSize=22
-Logo.TextXAlignment=Enum.TextXAlignment.Left
-Logo.ZIndex=11
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Name = "OpenToggle"
+ToggleBtn.Parent = Gui
+ToggleBtn.Size = UDim2.new(0, 35, 0, 35)
+ToggleBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ToggleBtn.Text = "-"
+ToggleBtn.TextColor3 = GL
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 20
+ToggleBtn.Visible = false
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 8)
 
-local CloseBtn=Instance.new("TextButton",Header)
-CloseBtn.Size=UDim2.new(0,30,0,30)
-CloseBtn.Position=UDim2.new(1,-45,0.5,-15)
-CloseBtn.BackgroundColor3=BG3
-CloseBtn.Text="×" CloseBtn.TextColor3=GM
-CloseBtn.Font=Enum.Font.GothamBold CloseBtn.TextSize=20
-CloseBtn.BorderSizePixel=0 CloseBtn.ZIndex=11
-Instance.new("UICorner",CloseBtn).CornerRadius=UDim.new(0,8)
+local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
+ToggleStroke.Color = Color3.fromRGB(40, 40, 40)
+ToggleStroke.Thickness = 1
 
-local Sidebar=Instance.new("Frame",M)
-Sidebar.Size=UDim2.new(0,150,1,-51)
-Sidebar.Position=UDim2.new(0,0,0,51)
-Sidebar.BackgroundColor3=BG2 Sidebar.BorderSizePixel=0 Sidebar.ZIndex=10 Sidebar.Parent=M
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Parent = Gui
+Main.Size = UDim2.new(0, 600, 0, 390)
+Main.Position = UDim2.new(0.5, -300, 0.5, -195)
+Main.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
+Main.ClipsDescendants = true
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 8)
 
-local TabList=Instance.new("Frame",Sidebar)
-TabList.Size=UDim2.new(1,-16,1,-16)
-TabList.Position=UDim2.new(0,8,0,8)
-TabList.BackgroundTransparency=1 TabList.ZIndex=11
-local tabLayout=Instance.new("UIListLayout",TabList)
-tabLayout.Padding=UDim.new(0,6)
-tabLayout.SortOrder=Enum.SortOrder.LayoutOrder
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Name = "MinimizeBtn"
+MinimizeBtn.Parent = Main
+MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+MinimizeBtn.Position = UDim2.new(1, -35, 0, 8)
+MinimizeBtn.BackgroundTransparency = 1
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.fromRGB(140, 140, 140)
+MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.TextSize = 20
+MinimizeBtn.ZIndex = 10
 
-local Content=Instance.new("Frame",M)
-Content.Size=UDim2.new(1,-150,1,-51)
-Content.Position=UDim2.new(0,150,0,51)
-Content.BackgroundTransparency=1 Content.ClipsDescendants=true Content.ZIndex=10
+local Sidebar = Instance.new("Frame")
+Sidebar.Name = "Sidebar"
+Sidebar.Parent = Main
+Sidebar.Size = UDim2.new(0, 150, 1, 0)
+Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Sidebar.BorderSizePixel = 0
+Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 8)
 
-local TabTitle=Instance.new("TextLabel",Content)
-TabTitle.Size=UDim2.new(1,-40,0,45)
-TabTitle.Position=UDim2.new(0,25,0,15)
-TabTitle.BackgroundTransparency=1
-TabTitle.Text="Rage"
-TabTitle.TextColor3=GL
-TabTitle.Font=Enum.Font.GothamBold
-TabTitle.TextSize=26
-TabTitle.TextXAlignment=Enum.TextXAlignment.Left
-TabTitle.ZIndex=11
+local Logo = Instance.new("TextLabel")
+Logo.Parent = Sidebar
+Logo.Size = UDim2.new(1, -20, 0, 40)
+Logo.Position = UDim2.new(0, 15, 0, 15)
+Logo.BackgroundTransparency = 1
+Logo.Text = "NIGHTFALL\nVERSION-1.0"
+Logo.TextColor3 = GL
+Logo.Font = Enum.Font.GothamBold
+Logo.TextSize = 13
+Logo.TextXAlignment = Enum.TextXAlignment.Left
 
-local ContentArea=Instance.new("Frame",Content)
-ContentArea.Size=UDim2.new(1,-50,1,-90)
-ContentArea.Position=UDim2.new(0,25,0,80)
-ContentArea.BackgroundTransparency=1 Content.ClipsDescendants=true Content.ZIndex=11
+local Separator = Instance.new("Frame")
+Separator.Parent = Sidebar
+Separator.Size = UDim2.new(1, -30, 0, 1)
+Separator.Position = UDim2.new(0, 15, 0, 60)
+Separator.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Separator.BorderSizePixel = 0
 
-local dg,ds,sp
-Header.InputBegan:Connect(function(i)
-    if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
-        dg=true ds=i.Position sp=M.Position
-    end
-end)
-UIS.InputChanged:Connect(function(i)
-    if dg and (i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseMovement) then
-        local d=i.Position-ds
-        M.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d.X,sp.Y.Scale,sp.Y.Offset+d.Y)
-    end
-end)
-UIS.InputEnded:Connect(function(i)
-    if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dg=false end
-end)
+local TabHolder = Instance.new("Frame")
+TabHolder.Parent = Sidebar
+TabHolder.Size = UDim2.new(1, 0, 0, 240)
+TabHolder.Position = UDim2.new(0, 0, 0, 70)
+TabHolder.BackgroundTransparency = 1
 
-CloseBtn.MouseButton1Click:Connect(function() M.Visible=false end)
-UIS.InputBegan:Connect(function(input,gp)
-    if gp then return end
-    if input.KeyCode==Enum.KeyCode.RightShift then M.Visible=not M.Visible end
-end)
+local TabLayout = Instance.new("UIListLayout")
+TabLayout.Parent = TabHolder
+TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabLayout.Padding = UDim.new(0, 4)
+
+local ProfileFrame = Instance.new("Frame")
+ProfileFrame.Parent = Sidebar
+ProfileFrame.Size = UDim2.new(1, -30, 0, 40)
+ProfileFrame.Position = UDim2.new(0, 15, 1, -50)
+ProfileFrame.BackgroundTransparency = 1
+
+local ProfileName = Instance.new("TextLabel")
+ProfileName.Parent = ProfileFrame
+ProfileName.Size = UDim2.new(1, 0, 0, 16)
+ProfileName.Position = UDim2.new(0, 0, 0, 2)
+ProfileName.BackgroundTransparency = 1
+ProfileName.Text = LP.Name
+ProfileName.TextColor3 = Color3.fromRGB(220, 220, 220)
+ProfileName.Font = Enum.Font.GothamBold
+ProfileName.TextSize = 11
+ProfileName.TextXAlignment = Enum.TextXAlignment.Left
+
+local ProfileTill = Instance.new("TextLabel")
+ProfileTill.Parent = ProfileFrame
+ProfileTill.Size = UDim2.new(1, 0, 0, 14)
+ProfileTill.Position = UDim2.new(0, 0, 0, 20)
+ProfileTill.BackgroundTransparency = 1
+ProfileTill.Text = "Till: Lifetime"
+ProfileTill.TextColor3 = Color3.fromRGB(110, 110, 110)
+ProfileTill.Font = Enum.Font.Gotham
+ProfileTill.TextSize = 10
+ProfileTill.TextXAlignment = Enum.TextXAlignment.Left
+
+local ContentHolder = Instance.new("Frame")
+ContentHolder.Parent = Main
+ContentHolder.Size = UDim2.new(1, -150, 1, 0)
+ContentHolder.Position = UDim2.new(0, 150, 0, 0)
+ContentHolder.BackgroundTransparency = 1
+
+local Pages = {}
+local TabBtns = {}
+
+local function CreateTab(name)
+    local btn = Instance.new("TextButton")
+    btn.Parent = TabHolder
+    btn.Size = UDim2.new(1, 0, 0, 34)
+    btn.BackgroundTransparency = 1
+    btn.Text = ""
+
+    local pad = Instance.new("UIPadding", btn)
+    pad.PaddingLeft = UDim.new(0, 18)
+
+    local title = Instance.new("TextLabel")
+    title.Parent = btn
+    title.Size = UDim2.new(1, 0, 1, 0)
+    title.BackgroundTransparency = 1
+    title.Text = name
+    title.TextColor3 = Color3.fromRGB(120, 120, 120)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 12
+    title.TextXAlignment = Enum.TextXAlignment.Left
+
+    local page = Instance.new("Frame")
+    page.Parent = ContentHolder
+    page.Size = UDim2.new(1, 0, 1, 0)
+    page.BackgroundTransparency = 1
+    page.Visible = false
+
+    local leftCol = Instance.new("ScrollingFrame", page)
+    leftCol.Name = "LeftCol"
+    leftCol.Size = UDim2.new(0.5, -15, 1, -20)
+    leftCol.Position = UDim2.new(0, 10, 0, 10)
+    leftCol.BackgroundTransparency = 1
+    leftCol.ScrollBarThickness = 0
+    leftCol.CanvasSize = UDim2.new(0,0,0,0)
+    leftCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+    local rightCol = Instance.new("ScrollingFrame", page)
+    rightCol.Name = "RightCol"
+    rightCol.Size = UDim2.new(0.5, -15, 1, -20)
+    rightCol.Position = UDim2.new(0.5, 5, 0, 10)
+    rightCol.BackgroundTransparency = 1
+    rightCol.ScrollBarThickness = 0
+    rightCol.CanvasSize = UDim2.new(0,0,0,0)
+    rightCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+    Instance.new("UIListLayout", leftCol).Padding = UDim.new(0, 10)
+    Instance.new("UIListLayout", rightCol).Padding = UDim.new(0, 10)
+
+    Pages[name] = page
+    TabBtns[name] = title
+
+    btn.MouseButton1Click:Connect(function()
+        for pName, pFrame in pairs(Pages) do
+            pFrame.Visible = false
+        end
+        for tName, tTitle in pairs(TabBtns) do
+            TweenService:Create(tTitle, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(120, 120, 120)}):Play()
+        end
+        page.Visible = true
+        TweenService:Create(title, TweenInfo.new(0.2), {TextColor3 = GL}):Play()
+    end)
+
+    return leftCol, rightCol
+end
+
+local CombatL,CombatR = CreateTab("Combat")
+local VisualsL,VisualsR = CreateTab("Visuals")
+local HUDL,HUDR = CreateTab("HUD")
+local MovementL,MovementR = CreateTab("Movement")
+local PlayerL,PlayerR = CreateTab("Player")
+
+Pages["Combat"].Visible = true
+TabBtns["Combat"].TextColor3 = GL
+
+local isOpen = true
+local originalSize = UDim2.new(0, 600, 0, 390)
+local originalPos = UDim2.new(0.5, -300, 0.5, -195)
+
+local function OpenMenu()
+    isOpen = true
+    Main.Visible = true
+    Main.Size = UDim2.new(0, 540, 0, 350)
+    Main.Position = UDim2.new(0.5, -270, 0.5, -175)
+    TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = originalSize,
+        Position = originalPos
+    }):Play()
+    TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    task.wait(0.2)
+    ToggleBtn.Visible = false
+end
+
+local function CloseMenu()
+    isOpen = false
+    ToggleBtn.Size = UDim2.new(0, 0, 0, 0)
+    ToggleBtn.Visible = true
+    TweenService:Create(ToggleBtn, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 35, 0, 35)}):Play()
+    local tween = TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 540, 0, 350),
+        Position = UDim2.new(0.5, -270, 0.5, -175)
+    })
+    tween:Play()
+    tween.Completed:Connect(function()
+        if not isOpen then
+            Main.Visible = false
+        end
+    end)
+end
+
+MinimizeBtn.MouseButton1Click:Connect(CloseMenu)
+ToggleBtn.MouseButton1Click:Connect(OpenMenu)
+OpenMenu()
 
 -- ===== ЭЛЕМЕНТЫ =====
 local function Desc(parent,text)
@@ -138,15 +289,14 @@ local function Desc(parent,text)
     d.Text=text
     d.TextColor3=GD
     d.Font=Enum.Font.Gotham
-    d.TextSize=11
+    d.TextSize=10
     d.TextXAlignment=Enum.TextXAlignment.Left
 end
 
 local function Toggle(parent,text,default,cb)
     local b=Instance.new("TextButton",parent)
     b.Size=UDim2.new(1,0,0,32)
-    b.BackgroundColor3=BG2
-    b.BackgroundTransparency=0.4
+    b.BackgroundColor3=Color3.fromRGB(24,24,24)
     b.Text="" b.AutoButtonColor=false
     Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
     local l=Instance.new("TextLabel",b)
@@ -155,13 +305,13 @@ local function Toggle(parent,text,default,cb)
     l.BackgroundTransparency=1
     l.Text=text
     l.TextColor3=GM
-    l.Font=Enum.Font.GothamMedium
-    l.TextSize=13
+    l.Font=Enum.Font.GothamBold
+    l.TextSize=11
     l.TextXAlignment=Enum.TextXAlignment.Left
     local ind=Instance.new("Frame",b)
-    ind.Size=UDim2.new(0,30,0,14)
-    ind.Position=UDim2.new(1,-42,0.5,-7)
-    ind.BackgroundColor3=Color3.fromRGB(40,40,48)
+    ind.Size=UDim2.new(0,28,0,14)
+    ind.Position=UDim2.new(1,-40,0.5,-7)
+    ind.BackgroundColor3=Color3.fromRGB(40,40,40)
     ind.BorderSizePixel=0
     Instance.new("UICorner",ind).CornerRadius=UDim.new(1,0)
     local dot=Instance.new("Frame",ind)
@@ -177,7 +327,7 @@ local function Toggle(parent,text,default,cb)
             dot.Position=UDim2.new(1,-12,0.5,-5)
             l.TextColor3=GL
         else
-            ind.BackgroundColor3=Color3.fromRGB(40,40,48)
+            ind.BackgroundColor3=Color3.fromRGB(40,40,40)
             dot.Position=UDim2.new(0,2,0.5,-5)
             l.TextColor3=GM
         end
@@ -193,8 +343,7 @@ end
 local function Slider(parent,text,mn,mx,dv,cb)
     local f=Instance.new("Frame",parent)
     f.Size=UDim2.new(1,0,0,42)
-    f.BackgroundColor3=BG2
-    f.BackgroundTransparency=0.4
+    f.BackgroundColor3=Color3.fromRGB(24,24,24)
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,0,20)
@@ -202,13 +351,13 @@ local function Slider(parent,text,mn,mx,dv,cb)
     l.BackgroundTransparency=1
     l.Text=text..": "..dv
     l.TextColor3=GM
-    l.Font=Enum.Font.GothamMedium
-    l.TextSize=12
+    l.Font=Enum.Font.GothamBold
+    l.TextSize=11
     l.TextXAlignment=Enum.TextXAlignment.Left
     local b=Instance.new("Frame",f)
     b.Size=UDim2.new(1,-24,0,4)
     b.Position=UDim2.new(0,12,1,-12)
-    b.BackgroundColor3=Color3.fromRGB(35,35,42)
+    b.BackgroundColor3=Color3.fromRGB(40,40,40)
     b.BorderSizePixel=0
     Instance.new("UICorner",b).CornerRadius=UDim.new(1,0)
     local fl=Instance.new("Frame",b)
@@ -218,8 +367,8 @@ local function Slider(parent,text,mn,mx,dv,cb)
     fl.BorderSizePixel=0
     Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
     local bt=Instance.new("TextButton",b)
-    bt.Size=UDim2.new(0,18,0,18)
-    bt.Position=UDim2.new(ip,-9,0.5,-9)
+    bt.Size=UDim2.new(0,16,0,16)
+    bt.Position=UDim2.new(ip,-8,0.5,-8)
     bt.BackgroundColor3=Color3.fromRGB(220,200,255)
     bt.Text=""
     Instance.new("UICorner",bt).CornerRadius=UDim.new(1,0)
@@ -235,106 +384,60 @@ local function Slider(parent,text,mn,mx,dv,cb)
             local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
             local v=math.floor((mx-mn)*p+mn+0.5)
             fl.Size=UDim2.new(p,0,1,0)
-            bt.Position=UDim2.new(p,-9,0.5,-9)
+            bt.Position=UDim2.new(p,-8,0.5,-8)
             l.Text=text..": "..v
             if cb then cb(v) end
         end
     end)
 end
+-- ===== COMBAT =====
+Desc(CombatL,"Silent Aim — стрельба в голову в FOV")
+Toggle(CombatL,"Silent Aim",false,function(v) Config.SilentAim=v end)
+Desc(CombatL,"FOV — радиус поиска")
+Slider(CombatL,"FOV",20,400,150,function(v) Config.FOV=v end)
 
--- ===== ВКЛАДКИ =====
-local Tabs={"Rage","Visuals","Misc"}
-local tabButtons={}
-local tabFrames={}
+Desc(CombatR,"Wallbang — стрельба через стены")
+Toggle(CombatR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
-local function SwitchTab(name,btn,frame)
-    for _,b in pairs(tabButtons) do
-        b.BackgroundColor3=Color3.fromRGB(26,26,32)
-        b.BackgroundTransparency=0.2
-        local l=b:FindFirstChild("Lbl")
-        if l then l.TextColor3=GD end
-    end
-    for _,f in pairs(tabFrames) do f.Visible=false end
-    btn.BackgroundColor3=Color3.fromRGB(38,38,48)
-    btn.BackgroundTransparency=0
-    local l=btn:FindFirstChild("Lbl")
-    if l then l.TextColor3=GL end
-    frame.Visible=true
-    TabTitle.Text=name
-end
+-- ===== VISUALS =====
+Desc(VisualsL,"Bullet Tracers — фиолетовые трассеры")
+Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
+Desc(VisualsL,"ESP — боксы + имена")
+Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
+Desc(VisualsL,"Hitbox — прозрачная голова")
+Toggle(VisualsL,"Hitbox",false,function(v) Config.Hitbox=v end)
+Slider(VisualsL,"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
 
-for i,name in ipairs(Tabs) do
-    local btn=Instance.new("TextButton",TabList)
-    btn.Size=UDim2.new(1,0,0,42)
-    btn.BackgroundColor3=Color3.fromRGB(26,26,32)
-    btn.BackgroundTransparency=0.2
-    btn.Text="" btn.BorderSizePixel=0 btn.AutoButtonColor=false
-    btn.ZIndex=11
-    Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
-    local lbl=Instance.new("TextLabel",btn)
-    lbl.Name="Lbl"
-    lbl.Size=UDim2.new(1,0,1,0)
-    lbl.BackgroundTransparency=1
-    lbl.Text=name
-    lbl.TextColor3=GD
-    lbl.Font=Enum.Font.GothamMedium
-    lbl.TextSize=14
-    lbl.TextXAlignment=Enum.TextXAlignment.Center
-    lbl.ZIndex=12
-    local frame=Instance.new("ScrollingFrame",ContentArea)
-    frame.Size=UDim2.new(1,0,1,0)
-    frame.BackgroundTransparency=1
-    frame.BorderSizePixel=0
-    frame.ScrollBarThickness=3
-    frame.ScrollBarImageColor3=LN
-    frame.CanvasSize=UDim2.new(0,0,0,0)
-    frame.AutomaticCanvasSize=Enum.AutomaticSize.Y
-    frame.Visible=false
-    frame.ZIndex=11
-    local layout=Instance.new("UIListLayout",frame)
-    layout.Padding=UDim.new(0,8)
-    layout.SortOrder=Enum.SortOrder.LayoutOrder
-    local pad=Instance.new("UIPadding",frame)
-    pad.PaddingRight=UDim.new(0,8)
-    tabFrames[name]=frame
-    tabButtons[i]=btn
-    btn.MouseButton1Click:Connect(function() SwitchTab(name,btn,frame) end)
-end
+Desc(VisualsR,"Night — ночное небо")
+Toggle(VisualsR,"Night",false,function(v) Config.Night=v SetNight(v) end)
+Desc(VisualsR,"Custom Scope — свой прицел")
+Toggle(VisualsR,"Custom Scope",true,function(v) Config.CustomScope=v end)
+Desc(VisualsR,"Atmosphere — туман как CS:GO")
+Toggle(VisualsR,"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
+Slider(VisualsR,"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
 
--- ===== НАПОЛНЕНИЕ =====
-Desc(tabFrames["Rage"],"Silent Aim — стрельба в голову в FOV")
-Toggle(tabFrames["Rage"],"Silent Aim",false,function(v) Config.SilentAim=v end)
-Desc(tabFrames["Rage"],"FOV — радиус поиска")
-Slider(tabFrames["Rage"],"FOV",20,400,150,function(v) Config.FOV=v end)
-Desc(tabFrames["Rage"],"Wallbang — стрельба через стены")
-Toggle(tabFrames["Rage"],"Wallbang",false,function(v) Config.Wallbang=v end)
+-- ===== HUD =====
+Desc(HUDL,"Hit Sound — звук попадания")
+Toggle(HUDL,"Hit Sound",false,function(v) Config.HitSound=v end)
+Desc(HUDL,"Spinbot — вращение")
+Toggle(HUDL,"Spinbot",false,function(v) Config.Spinbot=v end)
 
-Desc(tabFrames["Visuals"],"Bullet Tracers — фиолетовые трассеры")
-Toggle(tabFrames["Visuals"],"Bullet Tracers",false,function(v) Config.Tracers=v end)
-Desc(tabFrames["Visuals"],"ESP — боксы + имена")
-Toggle(tabFrames["Visuals"],"ESP",false,function(v) Config.ESP=v end)
-Desc(tabFrames["Visuals"],"Third Person — вид от 3-го лица")
-Toggle(tabFrames["Visuals"],"Third Person",false,function(v) Config.ThirdPerson=v end)
-Slider(tabFrames["Visuals"],"Cam Distance",5,20,11,function(v) Config.CamDist=v end)
-Desc(tabFrames["Visuals"],"Hitbox — прозрачная голова")
-Toggle(tabFrames["Visuals"],"Hitbox",false,function(v) Config.Hitbox=v end)
-Slider(tabFrames["Visuals"],"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
-Desc(tabFrames["Visuals"],"Night — ночное небо")
-Toggle(tabFrames["Visuals"],"Night",false,function(v) Config.Night=v SetNight(v) end)
-Desc(tabFrames["Visuals"],"Custom Scope — свой прицел")
-Toggle(tabFrames["Visuals"],"Custom Scope",true,function(v) Config.CustomScope=v end)
-Desc(tabFrames["Visuals"],"Atmosphere — туман как в CS:GO")
-Toggle(tabFrames["Visuals"],"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
-Slider(tabFrames["Visuals"],"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
+-- ===== MOVEMENT =====
+Desc(MovementL,"Third Person — вид от 3-го лица")
+Toggle(MovementL,"Third Person",false,function(v) Config.ThirdPerson=v end)
+Slider(MovementL,"Cam Distance",5,20,11,function(v) Config.CamDist=v end)
 
-Desc(tabFrames["Misc"],"Spinbot — вращение персонажа")
-Toggle(tabFrames["Misc"],"Spinbot",false,function(v) Config.Spinbot=v end)
-Desc(tabFrames["Misc"],"Hit Sound — звук попадания")
-Toggle(tabFrames["Misc"],"Hit Sound",false,function(v) Config.HitSound=v end)
-Desc(tabFrames["Misc"],"Optimization — убрать партиклы/тени/туман")
-Toggle(tabFrames["Misc"],"Optimization",false,function(v) Config.Optimization=v Optimize(v) end)
-
-SwitchTab(Tabs[1],tabButtons[1],tabFrames[Tabs[1]])
+-- ===== PLAYER =====
+Desc(PlayerL,"Информация")
+local InfoLbl=Instance.new("TextLabel",PlayerL)
+InfoLbl.Size=UDim2.new(1,0,0,60)
+InfoLbl.BackgroundColor3=Color3.fromRGB(24,24,24)
+InfoLbl.Text="NightFall v1.0\nby gradient.pub"
+InfoLbl.TextColor3=GM
+InfoLbl.Font=Enum.Font.Gotham
+InfoLbl.TextSize=11
+InfoLbl.TextWrapped=true
+Instance.new("UICorner",InfoLbl).CornerRadius=UDim.new(0,6)
 -- ===== SILENT AIM =====
 local RaycastModule,BulletModule,GetRayIgnore
 pcall(function()
@@ -470,14 +573,13 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== TRACERS + HIT SOUND =====
+-- ===== TRACERS =====
 local lastTracer=0
 local function CreateTracer(s,e)
     local d=(s-e).Magnitude
     if d<3 then return end
     local mid=s:Lerp(e,0.5)
     local model=Instance.new("Model")
-    model.Name="Tracer"
     local core=Instance.new("Part")
     core.Anchored=true core.CanCollide=false
     core.Material=Enum.Material.ForceField
@@ -599,6 +701,7 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
+
 -- ===== NIGHT =====
 local NightSky
 function SetNight(on)
@@ -654,28 +757,6 @@ function SetAtm(on)
     else
         if ATMObj then ATMObj.Parent=nil end
     end
-end
-
--- ===== OPTIMIZATION =====
-function Optimize(on)
-    if not on then return end
-    for _,v in ipairs(Workspace:GetDescendants()) do
-        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire")
-           or v:IsA("Sparkles") or v:IsA("Trail") or v:IsA("Beam") then
-            pcall(function() v.Enabled=false end)
-        end
-        if v:IsA("BasePart") or v:IsA("MeshPart") then
-            pcall(function() v.CastShadow=false end)
-        end
-        if v:IsA("Decal") then
-            pcall(function() v.Transparency=1 end)
-        end
-    end
-    pcall(function()
-        Lighting.GlobalShadows=false
-        Lighting.FogEnd=100000
-        Lighting.FogStart=100000
-    end)
 end
 
 -- ===== ESP =====
@@ -856,5 +937,4 @@ task.spawn(function()
     end)
 end)
 
-print("✅ NightHvH Menu загружено!")
-        
+print("✅ NightFall Menu loaded!")
