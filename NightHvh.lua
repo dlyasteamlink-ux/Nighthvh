@@ -1,4 +1,4 @@
--- NIGHTFALL GUI
+-- ⚡ NightFall Menu v2 ⚡
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -14,6 +14,7 @@ local Camera = Workspace.CurrentCamera
 local Config={
     SilentAim=false, FOV=150, Wallbang=false,
     Tracers=false, ESP=false, ThirdPerson=false, CamDist=11,
+    FakeAngles=false, FakeMode="Back", HeadDown=false,
     Hitbox=false, HitboxSize=2, Night=false, CustomScope=true,
     Atmosphere=false, ATMDensity=40,
     Spinbot=false, HitSound=false, SoundId="rbxassetid://4817809188",
@@ -53,7 +54,6 @@ Gui.Parent = TargetContainer
 Gui.ResetOnSpawn = false
 
 local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Name = "OpenToggle"
 ToggleBtn.Parent = Gui
 ToggleBtn.Size = UDim2.new(0, 35, 0, 35)
 ToggleBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
@@ -66,10 +66,8 @@ ToggleBtn.Visible = false
 ToggleBtn.Active = true
 ToggleBtn.Draggable = true
 Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 8)
-
 local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
 ToggleStroke.Color = Color3.fromRGB(40, 40, 40)
-ToggleStroke.Thickness = 1
 
 local Main = Instance.new("Frame")
 Main.Name = "Main"
@@ -175,10 +173,8 @@ local function CreateTab(name)
     btn.Size = UDim2.new(1, 0, 0, 34)
     btn.BackgroundTransparency = 1
     btn.Text = ""
-
     local pad = Instance.new("UIPadding", btn)
     pad.PaddingLeft = UDim.new(0, 18)
-
     local title = Instance.new("TextLabel")
     title.Parent = btn
     title.Size = UDim2.new(1, 0, 1, 0)
@@ -188,13 +184,11 @@ local function CreateTab(name)
     title.Font = Enum.Font.GothamBold
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
-
     local page = Instance.new("Frame")
     page.Parent = ContentHolder
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.Visible = false
-
     local leftCol = Instance.new("ScrollingFrame", page)
     leftCol.Name = "LeftCol"
     leftCol.Size = UDim2.new(0.5, -15, 1, -20)
@@ -203,7 +197,6 @@ local function CreateTab(name)
     leftCol.ScrollBarThickness = 0
     leftCol.CanvasSize = UDim2.new(0,0,0,0)
     leftCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-
     local rightCol = Instance.new("ScrollingFrame", page)
     rightCol.Name = "RightCol"
     rightCol.Size = UDim2.new(0.5, -15, 1, -20)
@@ -212,24 +205,18 @@ local function CreateTab(name)
     rightCol.ScrollBarThickness = 0
     rightCol.CanvasSize = UDim2.new(0,0,0,0)
     rightCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-
     Instance.new("UIListLayout", leftCol).Padding = UDim.new(0, 10)
     Instance.new("UIListLayout", rightCol).Padding = UDim.new(0, 10)
-
     Pages[name] = page
     TabBtns[name] = title
-
     btn.MouseButton1Click:Connect(function()
-        for pName, pFrame in pairs(Pages) do
-            pFrame.Visible = false
-        end
+        for pName, pFrame in pairs(Pages) do pFrame.Visible = false end
         for tName, tTitle in pairs(TabBtns) do
             TweenService:Create(tTitle, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(120, 120, 120)}):Play()
         end
         page.Visible = true
         TweenService:Create(title, TweenInfo.new(0.2), {TextColor3 = GL}):Play()
     end)
-
     return leftCol, rightCol
 end
 
@@ -252,8 +239,7 @@ local function OpenMenu()
     Main.Size = UDim2.new(0, 540, 0, 350)
     Main.Position = UDim2.new(0.5, -270, 0.5, -175)
     TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = originalSize,
-        Position = originalPos
+        Size = originalSize, Position = originalPos
     }):Play()
     TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {Size = UDim2.new(0, 0, 0, 0)}):Play()
     task.wait(0.2)
@@ -266,14 +252,11 @@ local function CloseMenu()
     ToggleBtn.Visible = true
     TweenService:Create(ToggleBtn, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 35, 0, 35)}):Play()
     local tween = TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Size = UDim2.new(0, 540, 0, 350),
-        Position = UDim2.new(0.5, -270, 0.5, -175)
+        Size = UDim2.new(0, 540, 0, 350), Position = UDim2.new(0.5, -270, 0.5, -175)
     })
     tween:Play()
     tween.Completed:Connect(function()
-        if not isOpen then
-            Main.Visible = false
-        end
+        if not isOpen then Main.Visible = false end
     end)
 end
 
@@ -390,10 +373,24 @@ local function Slider(parent,text,mn,mx,dv,cb)
         end
     end)
 end
+
+local function Button(parent,text,cb)
+    local b=Instance.new("TextButton",parent)
+    b.Size=UDim2.new(1,0,0,30)
+    b.BackgroundColor3=Color3.fromRGB(24,24,24)
+    b.Text=text
+    b.TextColor3=GL
+    b.Font=Enum.Font.GothamBold
+    b.TextSize=11
+    b.AutoButtonColor=false
+    Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
+    b.MouseButton1Click:Connect(function() if cb then cb(b) end end)
+    return b
+end
 -- ===== COMBAT =====
-Desc(CombatL,"Silent Aim — стрельба в голову в FOV")
+Desc(CombatL,"Silent Aim — стрельба в голову врага в FOV")
 Toggle(CombatL,"Silent Aim",false,function(v) Config.SilentAim=v end)
-Desc(CombatL,"FOV — радиус поиска")
+Desc(CombatL,"FOV — радиус поиска врага")
 Slider(CombatL,"FOV",20,400,150,function(v) Config.FOV=v end)
 
 Desc(CombatR,"Wallbang — стрельба через стены")
@@ -402,30 +399,45 @@ Toggle(CombatR,"Wallbang",false,function(v) Config.Wallbang=v end)
 -- ===== VISUALS =====
 Desc(VisualsL,"Bullet Tracers — фиолетовые трассеры")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
-Desc(VisualsL,"ESP — боксы + имена")
+Desc(VisualsL,"ESP — боксы + имена врагов")
 Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
-Desc(VisualsL,"Hitbox — прозрачная голова")
+Desc(VisualsL,"Hitbox — прозрачная увеличенная голова")
 Toggle(VisualsL,"Hitbox",false,function(v) Config.Hitbox=v end)
 Slider(VisualsL,"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
 
-Desc(VisualsR,"Night — ночное небо")
+Desc(VisualsR,"Night — ночное небо со звёздами")
 Toggle(VisualsR,"Night",false,function(v) Config.Night=v SetNight(v) end)
-Desc(VisualsR,"Custom Scope — свой прицел")
+Desc(VisualsR,"Custom Scope — белый прицел CS:GO")
 Toggle(VisualsR,"Custom Scope",true,function(v) Config.CustomScope=v end)
-Desc(VisualsR,"Atmosphere — туман как CS:GO")
+Desc(VisualsR,"Atmosphere — туман/дымка как в CS:GO")
 Toggle(VisualsR,"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
 Slider(VisualsR,"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
 
 -- ===== HUD =====
-Desc(HUDL,"Hit Sound — звук попадания")
+Desc(HUDL,"Hit Sound — звук попадания по врагу")
 Toggle(HUDL,"Hit Sound",false,function(v) Config.HitSound=v end)
-Desc(HUDL,"Spinbot — вращение")
-Toggle(HUDL,"Spinbot",false,function(v) Config.Spinbot=v end)
+
+Desc(HUDR,"Spinbot — быстрое вращение персонажа")
+Toggle(HUDR,"Spinbot",false,function(v) Config.Spinbot=v end)
 
 -- ===== MOVEMENT =====
 Desc(MovementL,"Third Person — вид от 3-го лица")
 Toggle(MovementL,"Third Person",false,function(v) Config.ThirdPerson=v end)
-Slider(MovementL,"Cam Distance",5,20,11,function(v) Config.CamDist=v end)
+Slider(MovementL,"Cam Distance",5,30,11,function(v) Config.CamDist=v end)
+
+Desc(MovementR,"Fake Angles — тело смотрит назад")
+Toggle(MovementR,"Fake Angles",false,function(v) Config.FakeAngles=v end)
+Desc(MovementR,"Head Down — лицо смотрит в пол")
+Toggle(MovementR,"Head Down",false,function(v) Config.HeadDown=v end)
+
+local fakeModeBtn=Button(MovementR,"Mode: Back",function(b)
+    local modes={"Back","Down","Random"}
+    local i=1
+    for idx,m in ipairs(modes) do if m==Config.FakeMode then i=idx break end end
+    i=i%#modes+1
+    Config.FakeMode=modes[i]
+    b.Text="Mode: "..Config.FakeMode
+end)
 
 -- ===== PLAYER =====
 Desc(PlayerL,"Информация")
@@ -573,7 +585,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== TRACERS =====
+-- ===== TRACERS + HIT SOUND =====
 local lastTracer=0
 local function CreateTracer(s,e)
     local d=(s-e).Magnitude
@@ -657,30 +669,46 @@ oldNC=hookmetamethod(game,"__namecall",function(self,...)
     return oldNC(self,...)
 end)
 
--- ===== LOOPS =====
-RunService.RenderStepped:Connect(function()
-    if Config.Spinbot then
-        local c=LP.Character
-        if c then
-            local r=c:FindFirstChild("HumanoidRootPart")
-            if r then r.CFrame=CFrame.new(r.Position)*CFrame.Angles(0,math.rad((tick()*2000)%360),0) end
+-- ===== LOOPS (Spinbot, ThirdPerson, FakeAngles, HeadDown) =====
+local fakeAngle=0
+RunService.RenderStepped:Connect(function(dt)
+    local c=LP.Character
+    if not c then return end
+    local root=c:FindFirstChild("HumanoidRootPart")
+    local head=c:FindFirstChild("Head")
+    
+    if Config.Spinbot and root then
+        root.CFrame=CFrame.new(root.Position)*CFrame.Angles(0,math.rad((tick()*2000)%360),0)
+    end
+    
+    if Config.ThirdPerson and head then
+        for _,p in ipairs(c:GetDescendants()) do
+            if p:IsA("BasePart") and p.Name~="HumanoidRootPart" then
+                p.LocalTransparencyModifier=0
+            end
+        end
+        LP.CameraMinZoomDistance=Config.CamDist
+        LP.CameraMaxZoomDistance=30
+        if (Camera.CFrame.Position-head.Position).Magnitude<4 then
+            Camera.CFrame=Camera.CFrame+(Camera.CFrame.LookVector*-Config.CamDist)+Vector3.new(0,3,0)
         end
     end
-    if Config.ThirdPerson then
-        local c=LP.Character
-        if c then
-            local h=c:FindFirstChild("Head")
-            for _,p in ipairs(c:GetDescendants()) do
-                if p:IsA("BasePart") and p.Name~="HumanoidRootPart" then p.LocalTransparencyModifier=0 end
-            end
-            if h then
-                LP.CameraMinZoomDistance=Config.CamDist
-                LP.CameraMaxZoomDistance=20
-                if (Camera.CFrame.Position-h.Position).Magnitude<4 then
-                    Camera.CFrame=Camera.CFrame+(Camera.CFrame.LookVector*-Config.CamDist)+Vector3.new(0,3,0)
-                end
-            end
+    
+    if Config.FakeAngles and root then
+        local look=Camera.CFrame.LookVector
+        local fakeDir
+        if Config.FakeMode=="Back" then
+            fakeDir=-look
+        elseif Config.FakeMode=="Down" then
+            fakeDir=Vector3.new(look.X,-0.3,look.Z)
+        elseif Config.FakeMode=="Random" then
+            fakeAngle=(fakeAngle+dt*300)%360
+            fakeDir=Vector3.new(math.sin(math.rad(fakeAngle)),0,math.cos(math.rad(fakeAngle)))
+        else
+            fakeDir=-look
         end
+        local yaw=math.deg(math.atan2(-fakeDir.X,-fakeDir.Z))
+        root.CFrame=CFrame.new(root.Position) * CFrame.Angles(0, math.rad(yaw), 0)
     end
 end)
 
@@ -698,6 +726,24 @@ RunService.Heartbeat:Connect(function()
                     end
                 end
             end
+        end
+    end
+end)
+
+-- HeadDown через Neck
+local defaultNeckC0=nil
+RunService.RenderStepped:Connect(function()
+    local c=LP.Character
+    if not c then return end
+    local neck=c:FindFirstChild("Neck",true)
+    if not neck then return end
+    if Config.HeadDown then
+        if not defaultNeckC0 then defaultNeckC0=neck.C0 end
+        neck.C0=defaultNeckC0 * CFrame.Angles(math.rad(-80), 0, 0)
+    else
+        if defaultNeckC0 then
+            neck.C0=defaultNeckC0
+            defaultNeckC0=nil
         end
     end
 end)
@@ -828,77 +874,64 @@ task.spawn(function()
         CustomScope.DisplayOrder=999
         CustomScope.Parent=CoreGui
     end
-
     local ScopeFrame=Instance.new("Frame",CustomScope)
     ScopeFrame.Size=UDim2.new(0,300,0,300)
     ScopeFrame.Position=UDim2.new(0.5,-150,0.5,-150)
     ScopeFrame.BackgroundTransparency=1
     ScopeFrame.Visible=false
-
     local HLeft=Instance.new("Frame",ScopeFrame)
     HLeft.Size=UDim2.new(0.4,0,0,1)
     HLeft.Position=UDim2.new(0,0,0.5,-0.5)
     HLeft.BackgroundColor3=WH
     HLeft.BorderSizePixel=0
-
     local HRight=Instance.new("Frame",ScopeFrame)
     HRight.Size=UDim2.new(0.4,0,0,1)
     HRight.Position=UDim2.new(0.6,0,0.5,-0.5)
     HRight.BackgroundColor3=WH
     HRight.BorderSizePixel=0
-
     local VTop=Instance.new("Frame",ScopeFrame)
     VTop.Size=UDim2.new(0,1,0.4,0)
     VTop.Position=UDim2.new(0.5,-0.5,0,0)
     VTop.BackgroundColor3=WH
     VTop.BorderSizePixel=0
-
     local VBottom=Instance.new("Frame",ScopeFrame)
     VBottom.Size=UDim2.new(0,1,0.4,0)
     VBottom.Position=UDim2.new(0.5,-0.5,0.6,0)
     VBottom.BackgroundColor3=WH
     VBottom.BorderSizePixel=0
-
     for i=1,3 do
         local markL=Instance.new("Frame",ScopeFrame)
         markL.Size=UDim2.new(0,6,0,1)
         markL.Position=UDim2.new(0.4-(i*0.05),0,0.5,-0.5)
         markL.BackgroundColor3=WH
         markL.BorderSizePixel=0
-
         local markR=Instance.new("Frame",ScopeFrame)
         markR.Size=UDim2.new(0,6,0,1)
         markR.Position=UDim2.new(0.6+(i*0.05)-0.02,0,0.5,-0.5)
         markR.BackgroundColor3=WH
         markR.BorderSizePixel=0
-
         local markT=Instance.new("Frame",ScopeFrame)
         markT.Size=UDim2.new(0,1,0,6)
         markT.Position=UDim2.new(0.5,-0.5,0.4-(i*0.05),0)
         markT.BackgroundColor3=WH
         markT.BorderSizePixel=0
-
         local markB=Instance.new("Frame",ScopeFrame)
         markB.Size=UDim2.new(0,1,0,6)
         markB.Position=UDim2.new(0.5,-0.5,0.6+(i*0.05)-0.02,0)
         markB.BackgroundColor3=WH
         markB.BorderSizePixel=0
     end
-
     local Dot=Instance.new("Frame",ScopeFrame)
     Dot.Size=UDim2.new(0,2,0,2)
     Dot.Position=UDim2.new(0.5,-1,0.5,-1)
     Dot.BackgroundColor3=WH
     Dot.BorderSizePixel=0
-
     local dotStroke=Instance.new("UIStroke",Dot)
     dotStroke.Thickness=1
     dotStroke.Color=Color3.fromRGB(0,0,0)
     dotStroke.Transparency=0.3
-
     local CachedSniperScope=nil
     local ScopeVisible=false
-
     RunService.RenderStepped:Connect(function()
         if not Config.CustomScope then
             ScopeFrame.Visible=false
