@@ -1,4 +1,4 @@
--- ⚡ NightHvH Menu SIMPLE ⚡
+-- ⚡ NightHvH Menu ⚡
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
 local Workspace=game:GetService("Workspace")
@@ -51,7 +51,7 @@ Instance.new("UICorner",M).CornerRadius=UDim.new(0,16)
 
 local Header=Instance.new("Frame",M)
 Header.Size=UDim2.new(1,0,0,50)
-Header.BackgroundColor3=BG2 M.BorderSizePixel=0 Header.ZIndex=10 Header.Parent=M
+Header.BackgroundColor3=BG2 Header.BorderSizePixel=0 Header.ZIndex=10 Header.Parent=M
 Instance.new("UICorner",Header).CornerRadius=UDim.new(0,16)
 
 local Logo=Instance.new("TextLabel",Header)
@@ -108,7 +108,6 @@ ContentArea.Size=UDim2.new(1,-50,1,-90)
 ContentArea.Position=UDim2.new(0,25,0,80)
 ContentArea.BackgroundTransparency=1 Content.ClipsDescendants=true Content.ZIndex=11
 
--- Drag
 local dg,ds,sp
 Header.InputBegan:Connect(function(i)
     if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
@@ -150,7 +149,6 @@ local function Toggle(parent,text,default,cb)
     b.BackgroundTransparency=0.4
     b.Text="" b.AutoButtonColor=false
     Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
-    
     local l=Instance.new("TextLabel",b)
     l.Size=UDim2.new(1,-50,1,0)
     l.Position=UDim2.new(0,12,0,0)
@@ -160,26 +158,20 @@ local function Toggle(parent,text,default,cb)
     l.Font=Enum.Font.GothamMedium
     l.TextSize=13
     l.TextXAlignment=Enum.TextXAlignment.Left
-    
     local ind=Instance.new("Frame",b)
     ind.Size=UDim2.new(0,30,0,14)
     ind.Position=UDim2.new(1,-42,0.5,-7)
-    ind.BackgroundColor3=default and Color3.fromRGB(90,90,100) or Color3.fromRGB(40,40,48)
+    ind.BackgroundColor3=Color3.fromRGB(40,40,48)
     ind.BorderSizePixel=0
     Instance.new("UICorner",ind).CornerRadius=UDim.new(1,0)
-    
     local dot=Instance.new("Frame",ind)
     dot.Size=UDim2.new(0,10,0,10)
-    dot.Position=default and UDim2.new(1,-12,0.5,-5) or UDim2.new(0,2,0.5,-5)
+    dot.Position=UDim2.new(0,2,0.5,-5)
     dot.BackgroundColor3=GL
     dot.BorderSizePixel=0
     Instance.new("UICorner",dot).CornerRadius=UDim.new(1,0)
-    
     local state=default
-    if cb then cb(state) end
-    
-    b.MouseButton1Click:Connect(function()
-        state=not state
+    local function update()
         if state then
             ind.BackgroundColor3=Color3.fromRGB(90,90,100)
             dot.Position=UDim2.new(1,-12,0.5,-5)
@@ -189,6 +181,11 @@ local function Toggle(parent,text,default,cb)
             dot.Position=UDim2.new(0,2,0.5,-5)
             l.TextColor3=GM
         end
+    end
+    update()
+    b.MouseButton1Click:Connect(function()
+        state=not state
+        update()
         if cb then cb(state) end
     end)
 end
@@ -199,7 +196,6 @@ local function Slider(parent,text,mn,mx,dv,cb)
     f.BackgroundColor3=BG2
     f.BackgroundTransparency=0.4
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
-    
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,0,20)
     l.Position=UDim2.new(0,12,0,2)
@@ -209,28 +205,24 @@ local function Slider(parent,text,mn,mx,dv,cb)
     l.Font=Enum.Font.GothamMedium
     l.TextSize=12
     l.TextXAlignment=Enum.TextXAlignment.Left
-    
     local b=Instance.new("Frame",f)
     b.Size=UDim2.new(1,-24,0,4)
     b.Position=UDim2.new(0,12,1,-12)
     b.BackgroundColor3=Color3.fromRGB(35,35,42)
     b.BorderSizePixel=0
     Instance.new("UICorner",b).CornerRadius=UDim.new(1,0)
-    
     local fl=Instance.new("Frame",b)
     local ip=(dv-mn)/(mx-mn)
     fl.Size=UDim2.new(ip,0,1,0)
     fl.BackgroundColor3=PU
     fl.BorderSizePixel=0
     Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
-    
     local bt=Instance.new("TextButton",b)
     bt.Size=UDim2.new(0,18,0,18)
     bt.Position=UDim2.new(ip,-9,0.5,-9)
     bt.BackgroundColor3=Color3.fromRGB(220,200,255)
     bt.Text=""
     Instance.new("UICorner",bt).CornerRadius=UDim.new(1,0)
-    
     local dr=false
     bt.InputBegan:Connect(function(i)
         if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dr=true end
@@ -250,6 +242,7 @@ local function Slider(parent,text,mn,mx,dv,cb)
     end)
 end
 
+-- ===== ВКЛАДКИ =====
 local Tabs={"Rage","Visuals","Misc"}
 local tabButtons={}
 local tabFrames={}
@@ -278,7 +271,6 @@ for i,name in ipairs(Tabs) do
     btn.Text="" btn.BorderSizePixel=0 btn.AutoButtonColor=false
     btn.ZIndex=11
     Instance.new("UICorner",btn).CornerRadius=UDim.new(0,10)
-    
     local lbl=Instance.new("TextLabel",btn)
     lbl.Name="Lbl"
     lbl.Size=UDim2.new(1,0,1,0)
@@ -289,7 +281,6 @@ for i,name in ipairs(Tabs) do
     lbl.TextSize=14
     lbl.TextXAlignment=Enum.TextXAlignment.Center
     lbl.ZIndex=12
-    
     local frame=Instance.new("ScrollingFrame",ContentArea)
     frame.Size=UDim2.new(1,0,1,0)
     frame.BackgroundTransparency=1
@@ -318,11 +309,11 @@ Slider(tabFrames["Rage"],"FOV",20,400,150,function(v) Config.FOV=v end)
 Desc(tabFrames["Rage"],"Wallbang — стрельба через стены")
 Toggle(tabFrames["Rage"],"Wallbang",false,function(v) Config.Wallbang=v end)
 
-Desc(tabFrames["Visuals"],"Bullet Tracers")
+Desc(tabFrames["Visuals"],"Bullet Tracers — фиолетовые трассеры")
 Toggle(tabFrames["Visuals"],"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(tabFrames["Visuals"],"ESP — боксы + имена")
 Toggle(tabFrames["Visuals"],"ESP",false,function(v) Config.ESP=v end)
-Desc(tabFrames["Visuals"],"Third Person")
+Desc(tabFrames["Visuals"],"Third Person — вид от 3-го лица")
 Toggle(tabFrames["Visuals"],"Third Person",false,function(v) Config.ThirdPerson=v end)
 Slider(tabFrames["Visuals"],"Cam Distance",5,20,11,function(v) Config.CamDist=v end)
 Desc(tabFrames["Visuals"],"Hitbox — прозрачная голова")
@@ -330,14 +321,15 @@ Toggle(tabFrames["Visuals"],"Hitbox",false,function(v) Config.Hitbox=v end)
 Slider(tabFrames["Visuals"],"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
 Desc(tabFrames["Visuals"],"Night — ночное небо")
 Toggle(tabFrames["Visuals"],"Night",false,function(v) Config.Night=v SetNight(v) end)
-Desc(tabFrames["Visuals"],"Custom Scope")
+Desc(tabFrames["Visuals"],"Custom Scope — свой прицел")
 Toggle(tabFrames["Visuals"],"Custom Scope",true,function(v) Config.CustomScope=v end)
-Desc(tabFrames["Visuals"],"Atmosphere — туман CS:GO")
+Desc(tabFrames["Visuals"],"Atmosphere — туман как в CS:GO")
 Toggle(tabFrames["Visuals"],"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
+Slider(tabFrames["Visuals"],"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
 
-Desc(tabFrames["Misc"],"Spinbot")
+Desc(tabFrames["Misc"],"Spinbot — вращение персонажа")
 Toggle(tabFrames["Misc"],"Spinbot",false,function(v) Config.Spinbot=v end)
-Desc(tabFrames["Misc"],"Hit Sound")
+Desc(tabFrames["Misc"],"Hit Sound — звук попадания")
 Toggle(tabFrames["Misc"],"Hit Sound",false,function(v) Config.HitSound=v end)
 Desc(tabFrames["Misc"],"Optimization — убрать партиклы/тени/туман")
 Toggle(tabFrames["Misc"],"Optimization",false,function(v) Config.Optimization=v Optimize(v) end)
@@ -355,7 +347,6 @@ local target=nil
 local targetCache=nil
 local cacheTime=0
 local isProcessing=false
-
 local originalPerformRaycast=nil
 local originalCreate=nil
 
@@ -436,7 +427,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
         if ok then return res end
         return originalPerformRaycast(self,spreadAngle)
     end
-    
+
     BulletModule.create=function(self,aimMode,isScoped)
         if not Config.SilentAim and not Config.Wallbang then
             return originalCreate(self,aimMode,isScoped)
@@ -479,13 +470,14 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== TRACERS =====
+-- ===== TRACERS + HIT SOUND =====
 local lastTracer=0
 local function CreateTracer(s,e)
     local d=(s-e).Magnitude
     if d<3 then return end
     local mid=s:Lerp(e,0.5)
     local model=Instance.new("Model")
+    model.Name="Tracer"
     local core=Instance.new("Part")
     core.Anchored=true core.CanCollide=false
     core.Material=Enum.Material.ForceField
@@ -607,7 +599,6 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
-
 -- ===== NIGHT =====
 local NightSky
 function SetNight(on)
@@ -669,7 +660,7 @@ end
 function Optimize(on)
     if not on then return end
     for _,v in ipairs(Workspace:GetDescendants()) do
-        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") 
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire")
            or v:IsA("Sparkles") or v:IsA("Trail") or v:IsA("Beam") then
             pcall(function() v.Enabled=false end)
         end
@@ -745,4 +736,125 @@ end
 for _,p in pairs(Players:GetPlayers()) do ESP(p) end
 Players.PlayerAdded:Connect(ESP)
 
+-- ===== CUSTOM SCOPE =====
+task.spawn(function()
+    local CustomScope=CoreGui:FindFirstChild("CustomScopeGui")
+    if not CustomScope then
+        CustomScope=Instance.new("ScreenGui")
+        CustomScope.Name="CustomScopeGui"
+        CustomScope.ResetOnSpawn=false
+        CustomScope.IgnoreGuiInset=true
+        CustomScope.DisplayOrder=999
+        CustomScope.Parent=CoreGui
+    end
+
+    local ScopeFrame=Instance.new("Frame",CustomScope)
+    ScopeFrame.Size=UDim2.new(0,300,0,300)
+    ScopeFrame.Position=UDim2.new(0.5,-150,0.5,-150)
+    ScopeFrame.BackgroundTransparency=1
+    ScopeFrame.Visible=false
+
+    local HLeft=Instance.new("Frame",ScopeFrame)
+    HLeft.Size=UDim2.new(0.4,0,0,1)
+    HLeft.Position=UDim2.new(0,0,0.5,-0.5)
+    HLeft.BackgroundColor3=WH
+    HLeft.BorderSizePixel=0
+
+    local HRight=Instance.new("Frame",ScopeFrame)
+    HRight.Size=UDim2.new(0.4,0,0,1)
+    HRight.Position=UDim2.new(0.6,0,0.5,-0.5)
+    HRight.BackgroundColor3=WH
+    HRight.BorderSizePixel=0
+
+    local VTop=Instance.new("Frame",ScopeFrame)
+    VTop.Size=UDim2.new(0,1,0.4,0)
+    VTop.Position=UDim2.new(0.5,-0.5,0,0)
+    VTop.BackgroundColor3=WH
+    VTop.BorderSizePixel=0
+
+    local VBottom=Instance.new("Frame",ScopeFrame)
+    VBottom.Size=UDim2.new(0,1,0.4,0)
+    VBottom.Position=UDim2.new(0.5,-0.5,0.6,0)
+    VBottom.BackgroundColor3=WH
+    VBottom.BorderSizePixel=0
+
+    for i=1,3 do
+        local markL=Instance.new("Frame",ScopeFrame)
+        markL.Size=UDim2.new(0,6,0,1)
+        markL.Position=UDim2.new(0.4-(i*0.05),0,0.5,-0.5)
+        markL.BackgroundColor3=WH
+        markL.BorderSizePixel=0
+
+        local markR=Instance.new("Frame",ScopeFrame)
+        markR.Size=UDim2.new(0,6,0,1)
+        markR.Position=UDim2.new(0.6+(i*0.05)-0.02,0,0.5,-0.5)
+        markR.BackgroundColor3=WH
+        markR.BorderSizePixel=0
+
+        local markT=Instance.new("Frame",ScopeFrame)
+        markT.Size=UDim2.new(0,1,0,6)
+        markT.Position=UDim2.new(0.5,-0.5,0.4-(i*0.05),0)
+        markT.BackgroundColor3=WH
+        markT.BorderSizePixel=0
+
+        local markB=Instance.new("Frame",ScopeFrame)
+        markB.Size=UDim2.new(0,1,0,6)
+        markB.Position=UDim2.new(0.5,-0.5,0.6+(i*0.05)-0.02,0)
+        markB.BackgroundColor3=WH
+        markB.BorderSizePixel=0
+    end
+
+    local Dot=Instance.new("Frame",ScopeFrame)
+    Dot.Size=UDim2.new(0,2,0,2)
+    Dot.Position=UDim2.new(0.5,-1,0.5,-1)
+    Dot.BackgroundColor3=WH
+    Dot.BorderSizePixel=0
+
+    local dotStroke=Instance.new("UIStroke",Dot)
+    dotStroke.Thickness=1
+    dotStroke.Color=Color3.fromRGB(0,0,0)
+    dotStroke.Transparency=0.3
+
+    local CachedSniperScope=nil
+    local ScopeVisible=false
+
+    RunService.RenderStepped:Connect(function()
+        if not Config.CustomScope then
+            ScopeFrame.Visible=false
+            if CachedSniperScope and CachedSniperScope.Size~=UDim2.new(1,0,1,0) then
+                CachedSniperScope.Size=UDim2.new(1,0,1,0)
+            end
+            return
+        end
+        if CachedSniperScope and not CachedSniperScope.Parent then
+            CachedSniperScope=nil
+        end
+        if not CachedSniperScope then
+            local pg=LP:FindFirstChild("PlayerGui")
+            if pg then
+                local ok,sc=pcall(function()
+                    return pg.MainGui.Gameplay.Middle.SniperScope
+                end)
+                if ok and sc then
+                    CachedSniperScope=sc
+                end
+            end
+        end
+        if CachedSniperScope then
+            if CachedSniperScope.Visible then
+                CachedSniperScope.Size=UDim2.new(0,0,0,0)
+                CachedSniperScope.Visible=false
+                ScopeVisible=true
+            else
+                if CachedSniperScope.Size~=UDim2.new(1,0,1,0) then
+                    CachedSniperScope.Size=UDim2.new(1,0,1,0)
+                end
+                ScopeVisible=false
+            end
+        end
+        ScopeFrame.Visible=ScopeVisible
+    end)
+end)
+
 print("✅ NightHvH Menu загружено!")
+        
