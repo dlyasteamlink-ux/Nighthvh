@@ -1,4 +1,4 @@
--- ⚡ NightFall Menu v2 ⚡
+-- ⚡ NightFall Menu v3 ⚡
 local TweenService = game:GetService("TweenService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -388,7 +388,7 @@ local function Button(parent,text,cb)
     return b
 end
 -- ===== COMBAT =====
-Desc(CombatL,"Silent Aim — стрельба в голову врага в FOV")
+Desc(CombatL,"Silent Aim — стрельба в голову (включает wallbang)")
 Toggle(CombatL,"Silent Aim",false,function(v) Config.SilentAim=v end)
 Desc(CombatL,"FOV — радиус поиска врага")
 Slider(CombatL,"FOV",20,400,150,function(v) Config.FOV=v end)
@@ -397,7 +397,7 @@ Desc(CombatR,"Wallbang — стрельба через стены")
 Toggle(CombatR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
 -- ===== VISUALS =====
-Desc(VisualsL,"Bullet Tracers — фиолетовые трассеры")
+Desc(VisualsL,"Bullet Tracers — белые трассеры (6 сек)")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(VisualsL,"ESP — боксы + имена врагов")
 Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
@@ -450,7 +450,7 @@ InfoLbl.Font=Enum.Font.Gotham
 InfoLbl.TextSize=11
 InfoLbl.TextWrapped=true
 Instance.new("UICorner",InfoLbl).CornerRadius=UDim.new(0,6)
--- ===== SILENT AIM =====
+-- ===== SILENT AIM (с авто-включением Wallbang) =====
 local RaycastModule,BulletModule,GetRayIgnore
 pcall(function()
     RaycastModule=require(RS:WaitForChild("Shared",5):WaitForChild("Raycast",5))
@@ -502,9 +502,14 @@ RunService.RenderStepped:Connect(function()
     target=GetClosestPlayer()
 end)
 
+-- ФЛАГ: если SilentAim включён — всегда прострел через стены
+local function ShouldWallbang()
+    return Config.Wallbang or Config.SilentAim
+end
+
 if BulletModule and RaycastModule and GetRayIgnore then
     BulletModule._performRaycast=function(self,spreadAngle)
-        if not Config.SilentAim and not Config.Wallbang then
+        if not Config.SilentAim and not ShouldWallbang() then
             return originalPerformRaycast(self,spreadAngle)
         end
         if isProcessing then return originalPerformRaycast(self,spreadAngle) end
@@ -524,7 +529,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
                 return {Origin=origin,Direction=nd.Unit,Distance=d,
                     Hits={{Position=hp,Instance=target,Material="Plastic",Normal=Vector3.new(0,0,0),Exit=false}}}
             end
-            if Config.Wallbang then
+            if ShouldWallbang() then
                 local ri=GetRayIgnore()
                 local tr=RaycastModule.castThrough(origin,dir.Unit,maxR,ri)
                 if tr and #tr>0 then
@@ -544,7 +549,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 
     BulletModule.create=function(self,aimMode,isScoped)
-        if not Config.SilentAim and not Config.Wallbang then
+        if not Config.SilentAim and not ShouldWallbang() then
             return originalCreate(self,aimMode,isScoped)
         end
         if isProcessing then return originalCreate(self,aimMode,isScoped) end
@@ -565,7 +570,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
                         Hits={{Position=hp,Instance=target,Material="Plastic",Normal=Vector3.new(0,0,0),Exit=false}}}
                 end
             end
-            if Config.Wallbang then
+            if ShouldWallbang() then
                 local ri=GetRayIgnore()
                 local tr=RaycastModule.castThrough(origin,dir.Unit,maxR,ri)
                 if tr and #tr>0 then
@@ -585,42 +590,78 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== TRACERS + HIT SOUND =====
+-- ===== CLEAN WHITE TRACERS =====
+local TracerConfig = {
+    Color = WH,
+    FadeTime = 6,
+    Thickness = 0.05,
+    Segments = 8,
+    ImpactEnabled = true,
+}
+
 local lastTracer=0
-local function CreateTracer(s,e)
-    local d=(s-e).Magnitude
-    if d<3 then return end
-    local mid=s:Lerp(e,0.5)
-    local model=Instance.new("Model")
-    local core=Instance.new("Part")
-    core.Anchored=true core.CanCollide=false
-    core.Material=Enum.Material.ForceField
-    core.Color=PU core.Transparency=0.5
-    core.Size=Vector3.new(d,0.06,0.06)
-    core.CFrame=CFrame.new(mid)*CFrame.lookAt(s,e).Rotation*CFrame.Angles(0,math.rad(90),0)
-    core.Shape=Enum.PartType.Cylinder
-    core.Parent=model
-    local glow=Instance.new("Part")
-    glow.Anchored=true glow.CanCollide=false
-    glow.Material=Enum.Material.Neon
-    glow.Color=PU glow.Transparency=0.75
-    glow.Size=Vector3.new(d,0.18,0.18)
-    glow.CFrame=core.CFrame
-    glow.Shape=Enum.PartType.Cylinder
-    glow.Parent=model
-    model.Parent=Workspace
-    local imp=Instance.new("Part")
-    imp.Anchored=true imp.CanCollide=false
-    imp.Material=Enum.Material.Neon
-    imp.Color=PU imp.Shape=Enum.PartType.Ball
-    imp.Size=Vector3.new(0.5,0.5,0.5)
-    imp.CFrame=CFrame.new(e)
-    imp.Transparency=0.3
-    imp.Parent=model
-    TweenService:Create(imp,TweenInfo.new(3),{Size=Vector3.new(0.01,0.01,0.01),Transparency=1}):Play()
-    TweenService:Create(core,TweenInfo.new(3),{Transparency=1,Size=Vector3.new(d,0,0)}):Play()
-    TweenService:Create(glow,TweenInfo.new(3),{Transparency=1,Size=Vector3.new(d,0,0)}):Play()
-    Debris:AddItem(model,3.1)
+local function CreateTracer(startPos, endPos)
+    local distance = (startPos - endPos).Magnitude
+    if distance < 3 then return end
+    
+    local model = Instance.new("Model")
+    model.Name = "Tracer"
+    
+    local segs = TracerConfig.Segments
+    local segLength = distance / segs
+    
+    for i = 1, segs do
+        local t1 = (i-1)/segs
+        local t2 = i/segs
+        local segStart = startPos:Lerp(endPos, t1)
+        local segEnd = startPos:Lerp(endPos, t2)
+        local segMid = segStart:Lerp(segEnd, 0.5)
+        
+        local fade = 0.1 + t1 * 0.7
+        
+        local segCFrame = CFrame.new(segMid) * CFrame.lookAt(segStart, segEnd).Rotation * CFrame.Angles(0, math.rad(90), 0)
+        
+        local seg = Instance.new("Part")
+        seg.Anchored = true
+        seg.CanCollide = false
+        seg.CanQuery = false
+        seg.CastShadow = false
+        seg.Material = Enum.Material.Neon
+        seg.Color = TracerConfig.Color
+        seg.Transparency = fade
+        seg.Size = Vector3.new(segLength, TracerConfig.Thickness, TracerConfig.Thickness)
+        seg.CFrame = segCFrame
+        seg.Shape = Enum.PartType.Cylinder
+        seg.Parent = model
+        
+        TweenService:Create(seg, TweenInfo.new(TracerConfig.FadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Transparency = 1
+        }):Play()
+    end
+    
+    model.Parent = Workspace
+    
+    if TracerConfig.ImpactEnabled then
+        local impact = Instance.new("Part")
+        impact.Anchored = true
+        impact.CanCollide = false
+        impact.CanQuery = false
+        impact.CastShadow = false
+        impact.Material = Enum.Material.Neon
+        impact.Color = TracerConfig.Color
+        impact.Shape = Enum.PartType.Ball
+        impact.Size = Vector3.new(0.2, 0.2, 0.2)
+        impact.CFrame = CFrame.new(endPos)
+        impact.Transparency = 0.2
+        impact.Parent = model
+        
+        TweenService:Create(impact, TweenInfo.new(TracerConfig.FadeTime * 0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            Size = Vector3.new(0.4, 0.4, 0.4),
+            Transparency = 1
+        }):Play()
+    end
+    
+    Debris:AddItem(model, TracerConfig.FadeTime + 0.2)
 end
 
 local lastSound=0
@@ -647,7 +688,7 @@ oldNC=hookmetamethod(game,"__namecall",function(self,...)
                 end
                 if Config.Tracers then
                     local t=tick()
-                    if t-lastTracer>=0.05 then
+                    if t-lastTracer>=0.04 then
                         lastTracer=t
                         local cp=Camera.CFrame.Position
                         local sp=cp+(Camera.CFrame.LookVector*1.8)+(Camera.CFrame.RightVector*0.55)-(Camera.CFrame.UpVector*0.4)
@@ -669,7 +710,7 @@ oldNC=hookmetamethod(game,"__namecall",function(self,...)
     return oldNC(self,...)
 end)
 
--- ===== LOOPS (Spinbot, ThirdPerson, FakeAngles, HeadDown) =====
+-- ===== LOOPS =====
 local fakeAngle=0
 RunService.RenderStepped:Connect(function(dt)
     local c=LP.Character
@@ -942,15 +983,7 @@ task.spawn(function()
         end
         if CachedSniperScope and not CachedSniperScope.Parent then
             CachedSniperScope=nil
-        end
-        if not CachedSniperScope then
-            local pg=LP:FindFirstChild("PlayerGui")
-            if pg then
-                local ok,sc=pcall(function()
-                    return pg.MainGui.Gameplay.Middle.SniperScope
-                end)
-                if ok and sc then
-                    CachedSniperScope=sc
+        
                 end
             end
         end
