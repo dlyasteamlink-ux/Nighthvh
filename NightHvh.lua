@@ -1,15 +1,15 @@
--- ⚡ NightFall Menu v3 ⚡
-local TweenService = game:GetService("TweenService")
-local CoreGui = game:GetService("CoreGui")
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
-local Workspace = game:GetService("Workspace")
-local Lighting = game:GetService("Lighting")
-local Debris = game:GetService("Debris")
-local RS = game:GetService("ReplicatedStorage")
-local LP = Players.LocalPlayer
-local Camera = Workspace.CurrentCamera
+-- ⚡ NightFall Menu | PART 1/3 ⚡
+local TweenService=game:GetService("TweenService")
+local CoreGui=game:GetService("CoreGui")
+local Players=game:GetService("Players")
+local RunService=game:GetService("RunService")
+local UIS=game:GetService("UserInputService")
+local Workspace=game:GetService("Workspace")
+local Lighting=game:GetService("Lighting")
+local Debris=game:GetService("Debris")
+local RS=game:GetService("ReplicatedStorage")
+local LP=Players.LocalPlayer
+local Camera=Workspace.CurrentCamera
 
 local Config={
     SilentAim=false, FOV=150, Wallbang=false,
@@ -35,228 +35,223 @@ local GM=Color3.fromRGB(140,140,140)
 local GD=Color3.fromRGB(90,90,90)
 
 local function GetContainer()
-    local success, result = pcall(function()
+    local s,r=pcall(function()
         if gethui then return gethui() end
         if syn and syn.protect_gui then return CoreGui end
         return LP:FindFirstChildOfClass("PlayerGui") or CoreGui
     end)
-    return success and result or CoreGui
+    return s and r or CoreGui
 end
 
-local TargetContainer = GetContainer()
+local TargetContainer=GetContainer()
 if TargetContainer:FindFirstChild("NightFallWexsideUI") then
     TargetContainer.NightFallWexsideUI:Destroy()
 end
 
-local Gui = Instance.new("ScreenGui")
-Gui.Name = "NightFallWexsideUI"
-Gui.Parent = TargetContainer
-Gui.ResetOnSpawn = false
+local Gui=Instance.new("ScreenGui")
+Gui.Name="NightFallWexsideUI"
+Gui.Parent=TargetContainer
+Gui.ResetOnSpawn=false
 
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Parent = Gui
-ToggleBtn.Size = UDim2.new(0, 35, 0, 35)
-ToggleBtn.Position = UDim2.new(0.05, 0, 0.1, 0)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ToggleBtn.Text = "-"
-ToggleBtn.TextColor3 = GL
-ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.TextSize = 20
-ToggleBtn.Visible = false
-ToggleBtn.Active = true
-ToggleBtn.Draggable = true
-Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 8)
-local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
-ToggleStroke.Color = Color3.fromRGB(40, 40, 40)
+local ToggleBtn=Instance.new("TextButton")
+ToggleBtn.Parent=Gui
+ToggleBtn.Size=UDim2.new(0,35,0,35)
+ToggleBtn.Position=UDim2.new(0.05,0,0.1,0)
+ToggleBtn.BackgroundColor3=Color3.fromRGB(20,20,20)
+ToggleBtn.Text="-"
+ToggleBtn.TextColor3=GL
+ToggleBtn.Font=Enum.Font.GothamBold
+ToggleBtn.TextSize=20
+ToggleBtn.Visible=false
+ToggleBtn.Active=true
+ToggleBtn.Draggable=true
+Instance.new("UICorner",ToggleBtn).CornerRadius=UDim.new(0,8)
+Instance.new("UIStroke",ToggleBtn).Color=Color3.fromRGB(40,40,40)
 
-local Main = Instance.new("Frame")
-Main.Name = "Main"
-Main.Parent = Gui
-Main.Size = UDim2.new(0, 600, 0, 390)
-Main.Position = UDim2.new(0.5, -300, 0.5, -195)
-Main.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
-Main.BorderSizePixel = 0
-Main.Active = true
-Main.Draggable = true
-Main.ClipsDescendants = true
-Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 8)
+local Main=Instance.new("Frame")
+Main.Name="Main"
+Main.Parent=Gui
+Main.Size=UDim2.new(0,600,0,390)
+Main.Position=UDim2.new(0.5,-300,0.5,-195)
+Main.BackgroundColor3=Color3.fromRGB(16,16,16)
+Main.BorderSizePixel=0
+Main.Active=true
+Main.Draggable=true
+Main.ClipsDescendants=true
+Instance.new("UICorner",Main).CornerRadius=UDim.new(0,8)
 
-local MinimizeBtn = Instance.new("TextButton")
-MinimizeBtn.Name = "MinimizeBtn"
-MinimizeBtn.Parent = Main
-MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-MinimizeBtn.Position = UDim2.new(1, -35, 0, 8)
-MinimizeBtn.BackgroundTransparency = 1
-MinimizeBtn.Text = "-"
-MinimizeBtn.TextColor3 = Color3.fromRGB(140, 140, 140)
-MinimizeBtn.Font = Enum.Font.GothamBold
-MinimizeBtn.TextSize = 20
-MinimizeBtn.ZIndex = 10
+local MinimizeBtn=Instance.new("TextButton")
+MinimizeBtn.Parent=Main
+MinimizeBtn.Size=UDim2.new(0,30,0,30)
+MinimizeBtn.Position=UDim2.new(1,-35,0,8)
+MinimizeBtn.BackgroundTransparency=1
+MinimizeBtn.Text="-"
+MinimizeBtn.TextColor3=Color3.fromRGB(140,140,140)
+MinimizeBtn.Font=Enum.Font.GothamBold
+MinimizeBtn.TextSize=20
+MinimizeBtn.ZIndex=10
 
-local Sidebar = Instance.new("Frame")
-Sidebar.Name = "Sidebar"
-Sidebar.Parent = Main
-Sidebar.Size = UDim2.new(0, 150, 1, 0)
-Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Sidebar.BorderSizePixel = 0
-Instance.new("UICorner", Sidebar).CornerRadius = UDim.new(0, 8)
+local Sidebar=Instance.new("Frame")
+Sidebar.Parent=Main
+Sidebar.Size=UDim2.new(0,150,1,0)
+Sidebar.BackgroundColor3=Color3.fromRGB(20,20,20)
+Sidebar.BorderSizePixel=0
+Instance.new("UICorner",Sidebar).CornerRadius=UDim.new(0,8)
 
-local Logo = Instance.new("TextLabel")
-Logo.Parent = Sidebar
-Logo.Size = UDim2.new(1, -20, 0, 40)
-Logo.Position = UDim2.new(0, 15, 0, 15)
-Logo.BackgroundTransparency = 1
-Logo.Text = "NIGHTFALL\nVERSION-1.0"
-Logo.TextColor3 = GL
-Logo.Font = Enum.Font.GothamBold
-Logo.TextSize = 13
-Logo.TextXAlignment = Enum.TextXAlignment.Left
+local Logo=Instance.new("TextLabel")
+Logo.Parent=Sidebar
+Logo.Size=UDim2.new(1,-20,0,40)
+Logo.Position=UDim2.new(0,15,0,15)
+Logo.BackgroundTransparency=1
+Logo.Text="NIGHTFALL\nVERSION-1.0"
+Logo.TextColor3=GL
+Logo.Font=Enum.Font.GothamBold
+Logo.TextSize=13
+Logo.TextXAlignment=Enum.TextXAlignment.Left
 
-local Separator = Instance.new("Frame")
-Separator.Parent = Sidebar
-Separator.Size = UDim2.new(1, -30, 0, 1)
-Separator.Position = UDim2.new(0, 15, 0, 60)
-Separator.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-Separator.BorderSizePixel = 0
+local Separator=Instance.new("Frame")
+Separator.Parent=Sidebar
+Separator.Size=UDim2.new(1,-30,0,1)
+Separator.Position=UDim2.new(0,15,0,60)
+Separator.BackgroundColor3=Color3.fromRGB(30,30,30)
+Separator.BorderSizePixel=0
 
-local TabHolder = Instance.new("Frame")
-TabHolder.Parent = Sidebar
-TabHolder.Size = UDim2.new(1, 0, 0, 240)
-TabHolder.Position = UDim2.new(0, 0, 0, 70)
-TabHolder.BackgroundTransparency = 1
+local TabHolder=Instance.new("Frame")
+TabHolder.Parent=Sidebar
+TabHolder.Size=UDim2.new(1,0,0,240)
+TabHolder.Position=UDim2.new(0,0,0,70)
+TabHolder.BackgroundTransparency=1
 
-local TabLayout = Instance.new("UIListLayout")
-TabLayout.Parent = TabHolder
-TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-TabLayout.Padding = UDim.new(0, 4)
+local TabLayout=Instance.new("UIListLayout")
+TabLayout.Parent=TabHolder
+TabLayout.SortOrder=Enum.SortOrder.LayoutOrder
+TabLayout.Padding=UDim.new(0,4)
 
-local ProfileFrame = Instance.new("Frame")
-ProfileFrame.Parent = Sidebar
-ProfileFrame.Size = UDim2.new(1, -30, 0, 40)
-ProfileFrame.Position = UDim2.new(0, 15, 1, -50)
-ProfileFrame.BackgroundTransparency = 1
+local ProfileFrame=Instance.new("Frame")
+ProfileFrame.Parent=Sidebar
+ProfileFrame.Size=UDim2.new(1,-30,0,40)
+ProfileFrame.Position=UDim2.new(0,15,1,-50)
+ProfileFrame.BackgroundTransparency=1
 
-local ProfileName = Instance.new("TextLabel")
-ProfileName.Parent = ProfileFrame
-ProfileName.Size = UDim2.new(1, 0, 0, 16)
-ProfileName.Position = UDim2.new(0, 0, 0, 2)
-ProfileName.BackgroundTransparency = 1
-ProfileName.Text = LP.Name
-ProfileName.TextColor3 = Color3.fromRGB(220, 220, 220)
-ProfileName.Font = Enum.Font.GothamBold
-ProfileName.TextSize = 11
-ProfileName.TextXAlignment = Enum.TextXAlignment.Left
+local ProfileName=Instance.new("TextLabel")
+ProfileName.Parent=ProfileFrame
+ProfileName.Size=UDim2.new(1,0,0,16)
+ProfileName.Position=UDim2.new(0,0,0,2)
+ProfileName.BackgroundTransparency=1
+ProfileName.Text=LP.Name
+ProfileName.TextColor3=Color3.fromRGB(220,220,220)
+ProfileName.Font=Enum.Font.GothamBold
+ProfileName.TextSize=11
+ProfileName.TextXAlignment=Enum.TextXAlignment.Left
 
-local ProfileTill = Instance.new("TextLabel")
-ProfileTill.Parent = ProfileFrame
-ProfileTill.Size = UDim2.new(1, 0, 0, 14)
-ProfileTill.Position = UDim2.new(0, 0, 0, 20)
-ProfileTill.BackgroundTransparency = 1
-ProfileTill.Text = "Till: Lifetime"
-ProfileTill.TextColor3 = Color3.fromRGB(110, 110, 110)
-ProfileTill.Font = Enum.Font.Gotham
-ProfileTill.TextSize = 10
-ProfileTill.TextXAlignment = Enum.TextXAlignment.Left
+local ProfileTill=Instance.new("TextLabel")
+ProfileTill.Parent=ProfileFrame
+ProfileTill.Size=UDim2.new(1,0,0,14)
+ProfileTill.Position=UDim2.new(0,0,0,20)
+ProfileTill.BackgroundTransparency=1
+ProfileTill.Text="Till: Lifetime"
+ProfileTill.TextColor3=Color3.fromRGB(110,110,110)
+ProfileTill.Font=Enum.Font.Gotham
+ProfileTill.TextSize=10
+ProfileTill.TextXAlignment=Enum.TextXAlignment.Left
 
-local ContentHolder = Instance.new("Frame")
-ContentHolder.Parent = Main
-ContentHolder.Size = UDim2.new(1, -150, 1, 0)
-ContentHolder.Position = UDim2.new(0, 150, 0, 0)
-ContentHolder.BackgroundTransparency = 1
+local ContentHolder=Instance.new("Frame")
+ContentHolder.Parent=Main
+ContentHolder.Size=UDim2.new(1,-150,1,0)
+ContentHolder.Position=UDim2.new(0,150,0,0)
+ContentHolder.BackgroundTransparency=1
 
-local Pages = {}
-local TabBtns = {}
+local Pages={}
+local TabBtns={}
 
 local function CreateTab(name)
-    local btn = Instance.new("TextButton")
-    btn.Parent = TabHolder
-    btn.Size = UDim2.new(1, 0, 0, 34)
-    btn.BackgroundTransparency = 1
-    btn.Text = ""
-    local pad = Instance.new("UIPadding", btn)
-    pad.PaddingLeft = UDim.new(0, 18)
-    local title = Instance.new("TextLabel")
-    title.Parent = btn
-    title.Size = UDim2.new(1, 0, 1, 0)
-    title.BackgroundTransparency = 1
-    title.Text = name
-    title.TextColor3 = Color3.fromRGB(120, 120, 120)
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 12
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    local page = Instance.new("Frame")
-    page.Parent = ContentHolder
-    page.Size = UDim2.new(1, 0, 1, 0)
-    page.BackgroundTransparency = 1
-    page.Visible = false
-    local leftCol = Instance.new("ScrollingFrame", page)
-    leftCol.Name = "LeftCol"
-    leftCol.Size = UDim2.new(0.5, -15, 1, -20)
-    leftCol.Position = UDim2.new(0, 10, 0, 10)
-    leftCol.BackgroundTransparency = 1
-    leftCol.ScrollBarThickness = 0
-    leftCol.CanvasSize = UDim2.new(0,0,0,0)
-    leftCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    local rightCol = Instance.new("ScrollingFrame", page)
-    rightCol.Name = "RightCol"
-    rightCol.Size = UDim2.new(0.5, -15, 1, -20)
-    rightCol.Position = UDim2.new(0.5, 5, 0, 10)
-    rightCol.BackgroundTransparency = 1
-    rightCol.ScrollBarThickness = 0
-    rightCol.CanvasSize = UDim2.new(0,0,0,0)
-    rightCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", leftCol).Padding = UDim.new(0, 10)
-    Instance.new("UIListLayout", rightCol).Padding = UDim.new(0, 10)
-    Pages[name] = page
-    TabBtns[name] = title
+    local btn=Instance.new("TextButton")
+    btn.Parent=TabHolder
+    btn.Size=UDim2.new(1,0,0,34)
+    btn.BackgroundTransparency=1
+    btn.Text=""
+    local pad=Instance.new("UIPadding",btn)
+    pad.PaddingLeft=UDim.new(0,18)
+    local title=Instance.new("TextLabel")
+    title.Parent=btn
+    title.Size=UDim2.new(1,0,1,0)
+    title.BackgroundTransparency=1
+    title.Text=name
+    title.TextColor3=Color3.fromRGB(120,120,120)
+    title.Font=Enum.Font.GothamBold
+    title.TextSize=12
+    title.TextXAlignment=Enum.TextXAlignment.Left
+    local page=Instance.new("Frame")
+    page.Parent=ContentHolder
+    page.Size=UDim2.new(1,0,1,0)
+    page.BackgroundTransparency=1
+    page.Visible=false
+    local leftCol=Instance.new("ScrollingFrame",page)
+    leftCol.Size=UDim2.new(0.5,-15,1,-20)
+    leftCol.Position=UDim2.new(0,10,0,10)
+    leftCol.BackgroundTransparency=1
+    leftCol.ScrollBarThickness=0
+    leftCol.CanvasSize=UDim2.new(0,0,0,0)
+    leftCol.AutomaticCanvasSize=Enum.AutomaticSize.Y
+    local rightCol=Instance.new("ScrollingFrame",page)
+    rightCol.Size=UDim2.new(0.5,-15,1,-20)
+    rightCol.Position=UDim2.new(0.5,5,0,10)
+    rightCol.BackgroundTransparency=1
+    rightCol.ScrollBarThickness=0
+    rightCol.CanvasSize=UDim2.new(0,0,0,0)
+    rightCol.AutomaticCanvasSize=Enum.AutomaticSize.Y
+    Instance.new("UIListLayout",leftCol).Padding=UDim.new(0,10)
+    Instance.new("UIListLayout",rightCol).Padding=UDim.new(0,10)
+    Pages[name]=page
+    TabBtns[name]=title
     btn.MouseButton1Click:Connect(function()
-        for pName, pFrame in pairs(Pages) do pFrame.Visible = false end
-        for tName, tTitle in pairs(TabBtns) do
-            TweenService:Create(tTitle, TweenInfo.new(0.2), {TextColor3 = Color3.fromRGB(120, 120, 120)}):Play()
+        for _,p in pairs(Pages) do p.Visible=false end
+        for _,t in pairs(TabBtns) do
+            TweenService:Create(t,TweenInfo.new(0.2),{TextColor3=Color3.fromRGB(120,120,120)}):Play()
         end
-        page.Visible = true
-        TweenService:Create(title, TweenInfo.new(0.2), {TextColor3 = GL}):Play()
+        page.Visible=true
+        TweenService:Create(title,TweenInfo.new(0.2),{TextColor3=GL}):Play()
     end)
-    return leftCol, rightCol
+    return leftCol,rightCol
 end
 
-local CombatL,CombatR = CreateTab("Combat")
-local VisualsL,VisualsR = CreateTab("Visuals")
-local HUDL,HUDR = CreateTab("HUD")
-local MovementL,MovementR = CreateTab("Movement")
-local PlayerL,PlayerR = CreateTab("Player")
+local CombatL,CombatR=CreateTab("Combat")
+local VisualsL,VisualsR=CreateTab("Visuals")
+local HUDL,HUDR=CreateTab("HUD")
+local MovementL,MovementR=CreateTab("Movement")
+local PlayerL,PlayerR=CreateTab("Player")
 
-Pages["Combat"].Visible = true
-TabBtns["Combat"].TextColor3 = GL
+Pages["Combat"].Visible=true
+TabBtns["Combat"].TextColor3=GL
 
-local isOpen = true
-local originalSize = UDim2.new(0, 600, 0, 390)
-local originalPos = UDim2.new(0.5, -300, 0.5, -195)
+local isOpen=true
+local originalSize=UDim2.new(0,600,0,390)
+local originalPos=UDim2.new(0.5,-300,0.5,-195)
 
 local function OpenMenu()
-    isOpen = true
-    Main.Visible = true
-    Main.Size = UDim2.new(0, 540, 0, 350)
-    Main.Position = UDim2.new(0.5, -270, 0.5, -175)
-    TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = originalSize, Position = originalPos
+    isOpen=true
+    Main.Visible=true
+    Main.Size=UDim2.new(0,540,0,350)
+    Main.Position=UDim2.new(0.5,-270,0.5,-175)
+    TweenService:Create(Main,TweenInfo.new(0.3,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
+        Size=originalSize,Position=originalPos
     }):Play()
-    TweenService:Create(ToggleBtn, TweenInfo.new(0.2), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    TweenService:Create(ToggleBtn,TweenInfo.new(0.2),{Size=UDim2.new(0,0,0,0)}):Play()
     task.wait(0.2)
-    ToggleBtn.Visible = false
+    ToggleBtn.Visible=false
 end
 
 local function CloseMenu()
-    isOpen = false
-    ToggleBtn.Size = UDim2.new(0, 0, 0, 0)
-    ToggleBtn.Visible = true
-    TweenService:Create(ToggleBtn, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 35, 0, 35)}):Play()
-    local tween = TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Size = UDim2.new(0, 540, 0, 350), Position = UDim2.new(0.5, -270, 0.5, -175)
+    isOpen=false
+    ToggleBtn.Size=UDim2.new(0,0,0,0)
+    ToggleBtn.Visible=true
+    TweenService:Create(ToggleBtn,TweenInfo.new(0.2,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Size=UDim2.new(0,35,0,35)}):Play()
+    local tween=TweenService:Create(Main,TweenInfo.new(0.25,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
+        Size=UDim2.new(0,540,0,350),Position=UDim2.new(0.5,-270,0.5,-175)
     })
     tween:Play()
     tween.Completed:Connect(function()
-        if not isOpen then Main.Visible = false end
+        if not isOpen then Main.Visible=false end
     end)
 end
 
@@ -264,7 +259,6 @@ MinimizeBtn.MouseButton1Click:Connect(CloseMenu)
 ToggleBtn.MouseButton1Click:Connect(OpenMenu)
 OpenMenu()
 
--- ===== ЭЛЕМЕНТЫ =====
 local function Desc(parent,text)
     local d=Instance.new("TextLabel",parent)
     d.Size=UDim2.new(1,0,0,16)
@@ -387,8 +381,10 @@ local function Button(parent,text,cb)
     b.MouseButton1Click:Connect(function() if cb then cb(b) end end)
     return b
 end
+-- ⚡ NightFall Menu | PART 2/3 ⚡
+
 -- ===== COMBAT =====
-Desc(CombatL,"Silent Aim — стрельба в голову (включает wallbang)")
+Desc(CombatL,"Silent Aim — стрельба в голову в FOV")
 Toggle(CombatL,"Silent Aim",false,function(v) Config.SilentAim=v end)
 Desc(CombatL,"FOV — радиус поиска врага")
 Slider(CombatL,"FOV",20,400,150,function(v) Config.FOV=v end)
@@ -397,27 +393,27 @@ Desc(CombatR,"Wallbang — стрельба через стены")
 Toggle(CombatR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
 -- ===== VISUALS =====
-Desc(VisualsL,"Bullet Tracers — белые трассеры (6 сек)")
+Desc(VisualsL,"Bullet Tracers — белые трассеры 6 сек")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(VisualsL,"ESP — боксы + имена врагов")
 Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
-Desc(VisualsL,"Hitbox — прозрачная увеличенная голова")
+Desc(VisualsL,"Hitbox — прозрачная голова")
 Toggle(VisualsL,"Hitbox",false,function(v) Config.Hitbox=v end)
 Slider(VisualsL,"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
 
-Desc(VisualsR,"Night — ночное небо со звёздами")
+Desc(VisualsR,"Night — ночное небо")
 Toggle(VisualsR,"Night",false,function(v) Config.Night=v SetNight(v) end)
 Desc(VisualsR,"Custom Scope — белый прицел CS:GO")
 Toggle(VisualsR,"Custom Scope",true,function(v) Config.CustomScope=v end)
-Desc(VisualsR,"Atmosphere — туман/дымка как в CS:GO")
+Desc(VisualsR,"Atmosphere — туман как CS:GO")
 Toggle(VisualsR,"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
 Slider(VisualsR,"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
 
 -- ===== HUD =====
-Desc(HUDL,"Hit Sound — звук попадания по врагу")
+Desc(HUDL,"Hit Sound — звук попадания")
 Toggle(HUDL,"Hit Sound",false,function(v) Config.HitSound=v end)
 
-Desc(HUDR,"Spinbot — быстрое вращение персонажа")
+Desc(HUDR,"Spinbot — вращение персонажа")
 Toggle(HUDR,"Spinbot",false,function(v) Config.Spinbot=v end)
 
 -- ===== MOVEMENT =====
@@ -450,7 +446,54 @@ InfoLbl.Font=Enum.Font.Gotham
 InfoLbl.TextSize=11
 InfoLbl.TextWrapped=true
 Instance.new("UICorner",InfoLbl).CornerRadius=UDim.new(0,6)
--- ===== SILENT AIM (с авто-включением Wallbang) =====
+
+-- ===== SETNIGHT =====
+local NightSky
+function SetNight(on)
+    if on then
+        local os=Lighting:FindFirstChildOfClass("Sky")
+        if os then os.Parent=nil end
+        if not NightSky then
+            NightSky=Instance.new("Sky")
+            NightSky.SkyboxBk="rbxassetid://159454299"
+            NightSky.SkyboxDn="rbxassetid://159454296"
+            NightSky.SkyboxFt="rbxassetid://159454293"
+            NightSky.SkyboxLf="rbxassetid://159454286"
+            NightSky.SkyboxRt="rbxassetid://159454300"
+            NightSky.SkyboxUp="rbxassetid://159454288"
+            NightSky.SunTextureId="rbxassetid://0"
+            NightSky.MoonTextureId="rbxassetid://0"
+            NightSky.StarCount=3000
+        end
+        NightSky.Parent=Lighting
+    else
+        if NightSky then NightSky.Parent=nil end
+        if OldLighting.Sky then OldLighting.Sky.Parent=Lighting end
+    end
+end
+
+-- ===== SETATM =====
+local ATMObj=nil
+function SetAtm(on)
+    if on then
+        if not ATMObj then
+            ATMObj=Instance.new("Atmosphere")
+            ATMObj.Name="CSGO_Atm"
+        end
+        ATMObj.Density=Config.ATMDensity/100
+        ATMObj.Offset=0
+        ATMObj.Color=Color3.fromRGB(120,140,180)
+        ATMObj.Decay=Color3.fromRGB(60,70,100)
+        ATMObj.Glare=0.5
+        ATMObj.Haze=1.5
+        ATMObj.Parent=Lighting
+    else
+        if ATMObj then ATMObj.Parent=nil end
+    end
+end
+-- ⚡ NightFall Menu | PART 3/3 ⚡
+
+-- ===== SILENT AIM (отдельно) =====
 local RaycastModule,BulletModule,GetRayIgnore
 pcall(function()
     RaycastModule=require(RS:WaitForChild("Shared",5):WaitForChild("Raycast",5))
@@ -502,14 +545,9 @@ RunService.RenderStepped:Connect(function()
     target=GetClosestPlayer()
 end)
 
--- ФЛАГ: если SilentAim включён — всегда прострел через стены
-local function ShouldWallbang()
-    return Config.Wallbang or Config.SilentAim
-end
-
 if BulletModule and RaycastModule and GetRayIgnore then
     BulletModule._performRaycast=function(self,spreadAngle)
-        if not Config.SilentAim and not ShouldWallbang() then
+        if not Config.SilentAim and not Config.Wallbang then
             return originalPerformRaycast(self,spreadAngle)
         end
         if isProcessing then return originalPerformRaycast(self,spreadAngle) end
@@ -529,7 +567,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
                 return {Origin=origin,Direction=nd.Unit,Distance=d,
                     Hits={{Position=hp,Instance=target,Material="Plastic",Normal=Vector3.new(0,0,0),Exit=false}}}
             end
-            if ShouldWallbang() then
+            if Config.Wallbang then
                 local ri=GetRayIgnore()
                 local tr=RaycastModule.castThrough(origin,dir.Unit,maxR,ri)
                 if tr and #tr>0 then
@@ -549,7 +587,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 
     BulletModule.create=function(self,aimMode,isScoped)
-        if not Config.SilentAim and not ShouldWallbang() then
+        if not Config.SilentAim and not Config.Wallbang then
             return originalCreate(self,aimMode,isScoped)
         end
         if isProcessing then return originalCreate(self,aimMode,isScoped) end
@@ -570,7 +608,7 @@ if BulletModule and RaycastModule and GetRayIgnore then
                         Hits={{Position=hp,Instance=target,Material="Plastic",Normal=Vector3.new(0,0,0),Exit=false}}}
                 end
             end
-            if ShouldWallbang() then
+            if Config.Wallbang then
                 local ri=GetRayIgnore()
                 local tr=RaycastModule.castThrough(origin,dir.Unit,maxR,ri)
                 if tr and #tr>0 then
@@ -590,78 +628,67 @@ if BulletModule and RaycastModule and GetRayIgnore then
     end
 end
 
--- ===== CLEAN WHITE TRACERS =====
-local TracerConfig = {
-    Color = WH,
-    FadeTime = 6,
-    Thickness = 0.05,
-    Segments = 8,
-    ImpactEnabled = true,
+-- ===== TRACERS =====
+local TracerConfig={
+    Color=WH,
+    FadeTime=6,
+    Thickness=0.05,
+    Segments=8,
+    ImpactEnabled=true,
 }
 
 local lastTracer=0
-local function CreateTracer(startPos, endPos)
-    local distance = (startPos - endPos).Magnitude
-    if distance < 3 then return end
-    
-    local model = Instance.new("Model")
-    model.Name = "Tracer"
-    
-    local segs = TracerConfig.Segments
-    local segLength = distance / segs
-    
-    for i = 1, segs do
-        local t1 = (i-1)/segs
-        local t2 = i/segs
-        local segStart = startPos:Lerp(endPos, t1)
-        local segEnd = startPos:Lerp(endPos, t2)
-        local segMid = segStart:Lerp(segEnd, 0.5)
-        
-        local fade = 0.1 + t1 * 0.7
-        
-        local segCFrame = CFrame.new(segMid) * CFrame.lookAt(segStart, segEnd).Rotation * CFrame.Angles(0, math.rad(90), 0)
-        
-        local seg = Instance.new("Part")
-        seg.Anchored = true
-        seg.CanCollide = false
-        seg.CanQuery = false
-        seg.CastShadow = false
-        seg.Material = Enum.Material.Neon
-        seg.Color = TracerConfig.Color
-        seg.Transparency = fade
-        seg.Size = Vector3.new(segLength, TracerConfig.Thickness, TracerConfig.Thickness)
-        seg.CFrame = segCFrame
-        seg.Shape = Enum.PartType.Cylinder
-        seg.Parent = model
-        
-        TweenService:Create(seg, TweenInfo.new(TracerConfig.FadeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Transparency = 1
+local function CreateTracer(startPos,endPos)
+    local distance=(startPos-endPos).Magnitude
+    if distance<3 then return end
+    local model=Instance.new("Model")
+    model.Name="Tracer"
+    local segs=TracerConfig.Segments
+    local segLength=distance/segs
+    for i=1,segs do
+        local t1=(i-1)/segs
+        local t2=i/segs
+        local segStart=startPos:Lerp(endPos,t1)
+        local segEnd=startPos:Lerp(endPos,t2)
+        local segMid=segStart:Lerp(segEnd,0.5)
+        local fade=0.1+t1*0.7
+        local segCFrame=CFrame.new(segMid)*CFrame.lookAt(segStart,segEnd).Rotation*CFrame.Angles(0,math.rad(90),0)
+        local seg=Instance.new("Part")
+        seg.Anchored=true
+        seg.CanCollide=false
+        seg.CanQuery=false
+        seg.CastShadow=false
+        seg.Material=Enum.Material.Neon
+        seg.Color=TracerConfig.Color
+        seg.Transparency=fade
+        seg.Size=Vector3.new(segLength,TracerConfig.Thickness,TracerConfig.Thickness)
+        seg.CFrame=segCFrame
+        seg.Shape=Enum.PartType.Cylinder
+        seg.Parent=model
+        TweenService:Create(seg,TweenInfo.new(TracerConfig.FadeTime,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+            Transparency=1
         }):Play()
     end
-    
-    model.Parent = Workspace
-    
+    model.Parent=Workspace
     if TracerConfig.ImpactEnabled then
-        local impact = Instance.new("Part")
-        impact.Anchored = true
-        impact.CanCollide = false
-        impact.CanQuery = false
-        impact.CastShadow = false
-        impact.Material = Enum.Material.Neon
-        impact.Color = TracerConfig.Color
-        impact.Shape = Enum.PartType.Ball
-        impact.Size = Vector3.new(0.2, 0.2, 0.2)
-        impact.CFrame = CFrame.new(endPos)
-        impact.Transparency = 0.2
-        impact.Parent = model
-        
-        TweenService:Create(impact, TweenInfo.new(TracerConfig.FadeTime * 0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            Size = Vector3.new(0.4, 0.4, 0.4),
-            Transparency = 1
+        local impact=Instance.new("Part")
+        impact.Anchored=true
+        impact.CanCollide=false
+        impact.CanQuery=false
+        impact.CastShadow=false
+        impact.Material=Enum.Material.Neon
+        impact.Color=TracerConfig.Color
+        impact.Shape=Enum.PartType.Ball
+        impact.Size=Vector3.new(0.2,0.2,0.2)
+        impact.CFrame=CFrame.new(endPos)
+        impact.Transparency=0.2
+        impact.Parent=model
+        TweenService:Create(impact,TweenInfo.new(TracerConfig.FadeTime*0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{
+            Size=Vector3.new(0.4,0.4,0.4),
+            Transparency=1
         }):Play()
     end
-    
-    Debris:AddItem(model, TracerConfig.FadeTime + 0.2)
+    Debris:AddItem(model,TracerConfig.FadeTime+0.2)
 end
 
 local lastSound=0
@@ -710,18 +737,16 @@ oldNC=hookmetamethod(game,"__namecall",function(self,...)
     return oldNC(self,...)
 end)
 
--- ===== LOOPS =====
+-- ===== LOOPS (Spinbot, ThirdPerson, FakeAngles, HeadDown) =====
 local fakeAngle=0
 RunService.RenderStepped:Connect(function(dt)
     local c=LP.Character
     if not c then return end
     local root=c:FindFirstChild("HumanoidRootPart")
     local head=c:FindFirstChild("Head")
-    
     if Config.Spinbot and root then
         root.CFrame=CFrame.new(root.Position)*CFrame.Angles(0,math.rad((tick()*2000)%360),0)
     end
-    
     if Config.ThirdPerson and head then
         for _,p in ipairs(c:GetDescendants()) do
             if p:IsA("BasePart") and p.Name~="HumanoidRootPart" then
@@ -734,7 +759,6 @@ RunService.RenderStepped:Connect(function(dt)
             Camera.CFrame=Camera.CFrame+(Camera.CFrame.LookVector*-Config.CamDist)+Vector3.new(0,3,0)
         end
     end
-    
     if Config.FakeAngles and root then
         local look=Camera.CFrame.LookVector
         local fakeDir
@@ -749,7 +773,7 @@ RunService.RenderStepped:Connect(function(dt)
             fakeDir=-look
         end
         local yaw=math.deg(math.atan2(-fakeDir.X,-fakeDir.Z))
-        root.CFrame=CFrame.new(root.Position) * CFrame.Angles(0, math.rad(yaw), 0)
+        root.CFrame=CFrame.new(root.Position)*CFrame.Angles(0,math.rad(yaw),0)
     end
 end)
 
@@ -771,7 +795,6 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- HeadDown через Neck
 local defaultNeckC0=nil
 RunService.RenderStepped:Connect(function()
     local c=LP.Character
@@ -780,7 +803,7 @@ RunService.RenderStepped:Connect(function()
     if not neck then return end
     if Config.HeadDown then
         if not defaultNeckC0 then defaultNeckC0=neck.C0 end
-        neck.C0=defaultNeckC0 * CFrame.Angles(math.rad(-80), 0, 0)
+        neck.C0=defaultNeckC0*CFrame.Angles(math.rad(-80),0,0)
     else
         if defaultNeckC0 then
             neck.C0=defaultNeckC0
@@ -788,31 +811,6 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
--- ===== NIGHT =====
-local NightSky
-function SetNight(on)
-    if on then
-        local os=Lighting:FindFirstChildOfClass("Sky")
-        if os then os.Parent=nil end
-        if not NightSky then
-            NightSky=Instance.new("Sky")
-            NightSky.SkyboxBk="rbxassetid://159454299"
-            NightSky.SkyboxDn="rbxassetid://159454296"
-            NightSky.SkyboxFt="rbxassetid://159454293"
-            NightSky.SkyboxLf="rbxassetid://159454286"
-            NightSky.SkyboxRt="rbxassetid://159454300"
-            NightSky.SkyboxUp="rbxassetid://159454288"
-            NightSky.SunTextureId="rbxassetid://0"
-            NightSky.MoonTextureId="rbxassetid://0"
-            NightSky.StarCount=3000
-        end
-        NightSky.Parent=Lighting
-    else
-        if NightSky then NightSky.Parent=nil end
-        if OldLighting.Sky then OldLighting.Sky.Parent=Lighting end
-    end
-end
 
 RunService.Heartbeat:Connect(function()
     if Config.Night then
@@ -825,26 +823,6 @@ RunService.Heartbeat:Connect(function()
         Lighting.GlobalShadows=true
     end
 end)
-
--- ===== ATMOSPHERE =====
-local ATMObj=nil
-function SetAtm(on)
-    if on then
-        if not ATMObj then
-            ATMObj=Instance.new("Atmosphere")
-            ATMObj.Name="CSGO_Atm"
-        end
-        ATMObj.Density=Config.ATMDensity/100
-        ATMObj.Offset=0
-        ATMObj.Color=Color3.fromRGB(120,140,180)
-        ATMObj.Decay=Color3.fromRGB(60,70,100)
-        ATMObj.Glare=0.5
-        ATMObj.Haze=1.5
-        ATMObj.Parent=Lighting
-    else
-        if ATMObj then ATMObj.Parent=nil end
-    end
-end
 
 -- ===== ESP =====
 local Cont=CoreGui:FindFirstChild("ESPGui") or Instance.new("ScreenGui")
@@ -983,7 +961,15 @@ task.spawn(function()
         end
         if CachedSniperScope and not CachedSniperScope.Parent then
             CachedSniperScope=nil
-        
+        end
+        if not CachedSniperScope then
+            local pg=LP:FindFirstChild("PlayerGui")
+            if pg then
+                local ok,sc=pcall(function()
+                    return pg.MainGui.Gameplay.Middle.SniperScope
+                end)
+                if ok and sc then
+                    CachedSniperScope=sc
                 end
             end
         end
