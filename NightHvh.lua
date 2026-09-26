@@ -58,7 +58,6 @@ Gui.Name="FameSenceUI"
 Gui.Parent=TargetContainer
 Gui.ResetOnSpawn=false
 
--- ===== MAIN =====
 local Main=Instance.new("Frame")
 Main.Parent=Gui
 Main.Size=UDim2.new(0,620,0,440)
@@ -81,9 +80,7 @@ MainGrad.Color=ColorSequence.new({
 })
 MainGrad.Rotation=90
 
--- ===== HEADER =====
-local Header=Instance.new("Frame")
-Header.Parent=Main
+local Header=Instance.new("Frame",Main)
 Header.Size=UDim2.new(1,0,0,55)
 Header.BackgroundColor3=BG2
 Header.BorderSizePixel=0
@@ -97,8 +94,7 @@ HeaderGrad.Color=ColorSequence.new({
     ColorSequenceKeypoint.new(1,Color3.fromRGB(30,30,30))
 })
 
-local IconFrame=Instance.new("Frame")
-IconFrame.Parent=Header
+local IconFrame=Instance.new("Frame",Header)
 IconFrame.Size=UDim2.new(0,30,0,30)
 IconFrame.Position=UDim2.new(0,18,0.5,-15)
 IconFrame.BackgroundColor3=Color3.fromRGB(24,24,24)
@@ -107,32 +103,31 @@ IconFrame.ZIndex=11
 Instance.new("UICorner",IconFrame).CornerRadius=UDim.new(0,7)
 Instance.new("UIStroke",IconFrame).Color=AC
 
-local TBar1=Instance.new("Frame",IconFrame)
-TBar1.Size=UDim2.new(0,2,0,16)
-TBar1.Position=UDim2.new(0,9,0.5,-8)
-TBar1.BackgroundColor3=AC
-TBar1.BorderSizePixel=0
-TBar1.ZIndex=12
-Instance.new("UICorner",TBar1).CornerRadius=UDim.new(0,1)
+local TB1=Instance.new("Frame",IconFrame)
+TB1.Size=UDim2.new(0,2,0,16)
+TB1.Position=UDim2.new(0,9,0.5,-8)
+TB1.BackgroundColor3=AC
+TB1.BorderSizePixel=0
+TB1.ZIndex=12
+Instance.new("UICorner",TB1).CornerRadius=UDim.new(0,1)
 
-local TBar2=Instance.new("Frame",IconFrame)
-TBar2.Size=UDim2.new(0,9,0,2)
-TBar2.Position=UDim2.new(0,10,0,9)
-TBar2.BackgroundColor3=AC
-TBar2.BorderSizePixel=0
-TBar2.ZIndex=12
-Instance.new("UICorner",TBar2).CornerRadius=UDim.new(0,1)
+local TB2=Instance.new("Frame",IconFrame)
+TB2.Size=UDim2.new(0,9,0,2)
+TB2.Position=UDim2.new(0,10,0,9)
+TB2.BackgroundColor3=AC
+TB2.BorderSizePixel=0
+TB2.ZIndex=12
+Instance.new("UICorner",TB2).CornerRadius=UDim.new(0,1)
 
-local TBar3=Instance.new("Frame",IconFrame)
-TBar3.Size=UDim2.new(0,6,0,2)
-TBar3.Position=UDim2.new(0,10,0,15)
-TBar3.BackgroundColor3=AC
-TBar3.BorderSizePixel=0
-TBar3.ZIndex=12
-Instance.new("UICorner",TBar3).CornerRadius=UDim.new(0,1)
+local TB3=Instance.new("Frame",IconFrame)
+TB3.Size=UDim2.new(0,6,0,2)
+TB3.Position=UDim2.new(0,10,0,15)
+TB3.BackgroundColor3=AC
+TB3.BorderSizePixel=0
+TB3.ZIndex=12
+Instance.new("UICorner",TB3).CornerRadius=UDim.new(0,1)
 
-local Logo=Instance.new("TextLabel")
-Logo.Parent=Header
+local Logo=Instance.new("TextLabel",Header)
 Logo.Size=UDim2.new(0,250,1,0)
 Logo.Position=UDim2.new(0,58,0,0)
 Logo.BackgroundTransparency=1
@@ -161,8 +156,7 @@ VersionLbl.TextSize=11
 VersionLbl.TextXAlignment=Enum.TextXAlignment.Left
 VersionLbl.ZIndex=11
 
-local CloseBtn=Instance.new("TextButton")
-CloseBtn.Parent=Header
+local CloseBtn=Instance.new("TextButton",Header)
 CloseBtn.Size=UDim2.new(0,32,0,32)
 CloseBtn.Position=UDim2.new(1,-44,0.5,-16)
 CloseBtn.BackgroundColor3=BG3
@@ -176,9 +170,7 @@ CloseBtn.ZIndex=11
 Instance.new("UICorner",CloseBtn).CornerRadius=UDim.new(0,8)
 Instance.new("UIStroke",CloseBtn).Color=Color3.fromRGB(45,45,45)
 
--- ===== SIDEBAR =====
-local Sidebar=Instance.new("Frame")
-Sidebar.Parent=Main
+local Sidebar=Instance.new("Frame",Main)
 Sidebar.Size=UDim2.new(0,160,1,-55)
 Sidebar.Position=UDim2.new(0,0,0,55)
 Sidebar.BackgroundColor3=BG2
@@ -198,20 +190,17 @@ SideLine.Position=UDim2.new(1,-1,0,0)
 SideLine.BackgroundColor3=LINE
 SideLine.BorderSizePixel=0
 
-local TabHolder=Instance.new("Frame")
-TabHolder.Parent=Sidebar
+local TabHolder=Instance.new("Frame",Sidebar)
 TabHolder.Size=UDim2.new(1,-16,1,-20)
 TabHolder.Position=UDim2.new(0,8,0,10)
 TabHolder.BackgroundTransparency=1
 TabHolder.ZIndex=11
 
-local TabLayout=Instance.new("UIListLayout")
-TabLayout.Parent=TabHolder
+local TabLayout=Instance.new("UIListLayout",TabHolder)
 TabLayout.SortOrder=Enum.SortOrder.LayoutOrder
 TabLayout.Padding=UDim.new(0,4)
 
-local ContentHolder=Instance.new("Frame")
-ContentHolder.Parent=Main
+local ContentHolder=Instance.new("Frame",Main)
 ContentHolder.Size=UDim2.new(1,-160,1,-55)
 ContentHolder.Position=UDim2.new(0,160,0,55)
 ContentHolder.BackgroundTransparency=1
@@ -222,8 +211,7 @@ local TabBtns={}
 local TabLines={}
 
 local function CreateTab(name)
-    local btn=Instance.new("TextButton")
-    btn.Parent=TabHolder
+    local btn=Instance.new("TextButton",TabHolder)
     btn.Size=UDim2.new(1,0,0,38)
     btn.BackgroundColor3=BG3
     btn.BackgroundTransparency=0.5
@@ -231,7 +219,7 @@ local function CreateTab(name)
     btn.AutoButtonColor=false
     btn.ZIndex=11
     Instance.new("UICorner",btn).CornerRadius=UDim.new(0,6)
-    
+
     local line=Instance.new("Frame",btn)
     line.Size=UDim2.new(0,3,0.5,0)
     line.Position=UDim2.new(0,0,0.5,0)
@@ -241,9 +229,8 @@ local function CreateTab(name)
     line.Visible=false
     line.ZIndex=12
     Instance.new("UICorner",line).CornerRadius=UDim.new(1,0)
-    
-    local title=Instance.new("TextLabel")
-    title.Parent=btn
+
+    local title=Instance.new("TextLabel",btn)
     title.Size=UDim2.new(1,-20,1,0)
     title.Position=UDim2.new(0,18,0,0)
     title.BackgroundTransparency=1
@@ -253,14 +240,13 @@ local function CreateTab(name)
     title.TextSize=13
     title.TextXAlignment=Enum.TextXAlignment.Left
     title.ZIndex=12
-    
-    local page=Instance.new("Frame")
-    page.Parent=ContentHolder
+
+    local page=Instance.new("Frame",ContentHolder)
     page.Size=UDim2.new(1,0,1,0)
     page.BackgroundTransparency=1
     page.Visible=false
     page.ZIndex=11
-    
+
     local leftCol=Instance.new("ScrollingFrame",page)
     leftCol.Size=UDim2.new(0.5,-15,1,-20)
     leftCol.Position=UDim2.new(0,10,0,10)
@@ -269,7 +255,7 @@ local function CreateTab(name)
     leftCol.CanvasSize=UDim2.new(0,0,0,0)
     leftCol.AutomaticCanvasSize=Enum.AutomaticSize.Y
     leftCol.ZIndex=12
-    
+
     local rightCol=Instance.new("ScrollingFrame",page)
     rightCol.Size=UDim2.new(0.5,-15,1,-20)
     rightCol.Position=UDim2.new(0.5,5,0,10)
@@ -278,14 +264,14 @@ local function CreateTab(name)
     rightCol.CanvasSize=UDim2.new(0,0,0,0)
     rightCol.AutomaticCanvasSize=Enum.AutomaticSize.Y
     rightCol.ZIndex=12
-    
+
     Instance.new("UIListLayout",leftCol).Padding=UDim.new(0,10)
     Instance.new("UIListLayout",rightCol).Padding=UDim.new(0,10)
-    
+
     Pages[name]=page
     TabBtns[name]=title
     TabLines[name]=line
-    
+
     btn.MouseEnter:Connect(function()
         if title.TextColor3~=GL then
             TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.3}):Play()
@@ -296,7 +282,7 @@ local function CreateTab(name)
             TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.5}):Play()
         end
     end)
-    
+
     btn.MouseButton1Click:Connect(function()
         for _,p in pairs(Pages) do p.Visible=false end
         for tName,t in pairs(TabBtns) do
@@ -307,7 +293,6 @@ local function CreateTab(name)
         TweenService:Create(title,TweenInfo.new(0.2),{TextColor3=GL}):Play()
         line.Visible=true
     end)
-    
     return leftCol,rightCol
 end
 
@@ -321,9 +306,7 @@ Pages["Rage"].Visible=true
 TabBtns["Rage"].TextColor3=GL
 TabLines["Rage"].Visible=true
 
--- ===== ИКОНКА ОТКРЫТИЯ =====
-local ToggleBtn=Instance.new("TextButton")
-ToggleBtn.Parent=Gui
+local ToggleBtn=Instance.new("TextButton",Gui)
 ToggleBtn.Size=UDim2.new(0,50,0,50)
 ToggleBtn.Position=UDim2.new(0.05,0,0.1,0)
 ToggleBtn.BackgroundColor3=BG2
@@ -354,26 +337,22 @@ T3.BackgroundColor3=AC
 T3.BorderSizePixel=0
 Instance.new("UICorner",T3).CornerRadius=UDim.new(0,1)
 
--- ===== АНИМАЦИИ =====
-local originalSize=UDim2.new(0,620,0,440)
-local originalPos=UDim2.new(0.5,-310,0.5,-220)
+local origSize=UDim2.new(0,620,0,440)
+local origPos=UDim2.new(0.5,-310,0.5,-220)
 
 local function OpenMenu()
     Main.Visible=true
     Main.Size=UDim2.new(0,0,0,0)
     Main.Position=UDim2.new(0.5,0,0.5,0)
     TweenService:Create(Main,TweenInfo.new(0.4,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
-        Size=originalSize,
-        Position=originalPos
+        Size=origSize,Position=origPos
     }):Play()
-    task.wait(0.15)
     ToggleBtn.Visible=false
 end
 
 local function CloseMenu()
     TweenService:Create(Main,TweenInfo.new(0.25,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-        Size=UDim2.new(0,0,0,0),
-        Position=UDim2.new(0.5,0,0.5,0)
+        Size=UDim2.new(0,0,0,0),Position=UDim2.new(0.5,0,0.5,0)
     }):Play()
     task.wait(0.3)
     Main.Visible=false
@@ -403,7 +382,6 @@ UIS.InputEnded:Connect(function(i)
     if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dg=false end
 end)
 
--- ===== ЭЛЕМЕНТЫ =====
 local function Desc(parent,text)
     local d=Instance.new("TextLabel",parent)
     d.Size=UDim2.new(1,0,0,16)
@@ -444,7 +422,9 @@ local function Toggle(parent,text,default,cb)
     dot.BorderSizePixel=0
     Instance.new("UICorner",dot).CornerRadius=UDim.new(1,0)
     local state=default
-    local function update()
+    if cb then cb(state) end
+    b.MouseButton1Click:Connect(function()
+        state=not state
         if state then
             ind.BackgroundColor3=Color3.fromRGB(90,90,100)
             dot.Position=UDim2.new(1,-12,0.5,-5)
@@ -454,11 +434,6 @@ local function Toggle(parent,text,default,cb)
             dot.Position=UDim2.new(0,2,0.5,-5)
             l.TextColor3=GM
         end
-    end
-    update()
-    b.MouseButton1Click:Connect(function()
-        state=not state
-        update()
         if cb then cb(state) end
     end)
 end
@@ -529,16 +504,51 @@ local function Button(parent,text,cb)
     b.MouseButton1Click:Connect(function() if cb then cb(b) end end)
     return b
 end
-
--- Первое открытие
-Main.Size=UDim2.new(0,0,0,0)
-Main.Position=UDim2.new(0.5,0,0.5,0)
-task.wait(0.1)
-TweenService:Create(Main,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
-    Size=originalSize,
-    Position=originalPos
-}):Play()
 -- ⚡ FameSence Main | PART 2/3 ⚡
+
+-- ===== SETNIGHT / SETATM =====
+local NightSky
+function SetNight(on)
+    if on then
+        local os=Lighting:FindFirstChildOfClass("Sky")
+        if os then os.Parent=nil end
+        if not NightSky then
+            NightSky=Instance.new("Sky")
+            NightSky.SkyboxBk="rbxassetid://159454299"
+            NightSky.SkyboxDn="rbxassetid://159454296"
+            NightSky.SkyboxFt="rbxassetid://159454293"
+            NightSky.SkyboxLf="rbxassetid://159454286"
+            NightSky.SkyboxRt="rbxassetid://159454300"
+            NightSky.SkyboxUp="rbxassetid://159454288"
+            NightSky.SunTextureId="rbxassetid://0"
+            NightSky.MoonTextureId="rbxassetid://0"
+            NightSky.StarCount=3000
+        end
+        NightSky.Parent=Lighting
+    else
+        if NightSky then NightSky.Parent=nil end
+        if OldLighting.Sky then OldLighting.Sky.Parent=Lighting end
+    end
+end
+
+local ATMObj=nil
+function SetAtm(on)
+    if on then
+        if not ATMObj then
+            ATMObj=Instance.new("Atmosphere")
+            ATMObj.Name="CSGO_Atm"
+        end
+        ATMObj.Density=Config.ATMDensity/100
+        ATMObj.Offset=0
+        ATMObj.Color=Color3.fromRGB(120,140,180)
+        ATMObj.Decay=Color3.fromRGB(60,70,100)
+        ATMObj.Glare=0.5
+        ATMObj.Haze=1.5
+        ATMObj.Parent=Lighting
+    else
+        if ATMObj then ATMObj.Parent=nil end
+    end
+end
 
 -- ===== НАПОЛНЕНИЕ RAGE =====
 Desc(RageL,"Silent Aim — наводит пули в голову врага в FOV")
@@ -550,7 +560,7 @@ Desc(RageR,"Wallbang — прострел через стены")
 Toggle(RageR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
 -- ===== НАПОЛНЕНИЕ VISUALS =====
-Desc(VisualsL,"Bullet Tracers — белые трассеры")
+Desc(VisualsL,"Bullet Tracers — белые трассеры с градиентом")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(VisualsL,"ESP — боксы, скелет, HP, имена")
 Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
@@ -580,7 +590,7 @@ Toggle(MovementL,"Head Down",false,function(v) Config.HeadDown=v end)
 Desc(MovementR,"Spinbot — быстрое вращение персонажа")
 Toggle(MovementR,"Spinbot",false,function(v) Config.Spinbot=v end)
 
-local fakeModeBtn=Button(MovementR,"Mode: Back",function(b)
+Button(MovementR,"Mode: Back",function(b)
     local modes={"Back","Down","Random"}
     local i=1
     for idx,m in ipairs(modes) do if m==Config.FakeMode then i=idx break end end
@@ -623,7 +633,7 @@ InfoLine(InfoL,"Игрок",LP.Name)
 
 InfoLine(InfoR,"Статус","Online")
 InfoLine(InfoR,"Режим","Rage")
-InfoLine(InfoR,"Обновлено","26.09.2026")
+InfoLine(InfoR,"Дата","26.09.2026")
 
 -- ===== НОВОСТИ =====
 local function NewsCard(parent,title,text,date)
@@ -637,7 +647,7 @@ local function NewsCard(parent,title,text,date)
     st.Color=AC
     st.Transparency=0.8
     st.Thickness=1
-    
+
     local l1=Instance.new("TextLabel",f)
     l1.Size=UDim2.new(1,-20,0,22)
     l1.Position=UDim2.new(0,12,0,10)
@@ -647,7 +657,7 @@ local function NewsCard(parent,title,text,date)
     l1.Font=Enum.Font.GothamBold
     l1.TextSize=13
     l1.TextXAlignment=Enum.TextXAlignment.Left
-    
+
     local l2=Instance.new("TextLabel",f)
     l2.Size=UDim2.new(1,-20,0,50)
     l2.Position=UDim2.new(0,12,0,34)
@@ -659,7 +669,7 @@ local function NewsCard(parent,title,text,date)
     l2.TextXAlignment=Enum.TextXAlignment.Left
     l2.TextYAlignment=Enum.TextYAlignment.Top
     l2.TextWrapped=true
-    
+
     local l3=Instance.new("TextLabel",f)
     l3.Size=UDim2.new(1,-20,0,14)
     l3.Position=UDim2.new(0,12,1,-20)
@@ -672,52 +682,7 @@ local function NewsCard(parent,title,text,date)
 end
 
 NewsCard(NewsL,"Добро пожаловать!","FameSence v1.0 успешно загружен. Используй вкладки Rage, Visuals и Movement для настройки.","26.09.2026")
-NewsCard(NewsL,"Новое обновление","Добавлены: Silent Aim, Wallbang, ESP, Bullet Tracers, Hitbox, Night, Atmosphere, Custom Scope и другое.","26.09.2026")
-
--- ===== НОЧЬ =====
-local NightSky
-function SetNight(on)
-    if on then
-        local os=Lighting:FindFirstChildOfClass("Sky")
-        if os then os.Parent=nil end
-        if not NightSky then
-            NightSky=Instance.new("Sky")
-            NightSky.SkyboxBk="rbxassetid://159454299"
-            NightSky.SkyboxDn="rbxassetid://159454296"
-            NightSky.SkyboxFt="rbxassetid://159454293"
-            NightSky.SkyboxLf="rbxassetid://159454286"
-            NightSky.SkyboxRt="rbxassetid://159454300"
-            NightSky.SkyboxUp="rbxassetid://159454288"
-            NightSky.SunTextureId="rbxassetid://0"
-            NightSky.MoonTextureId="rbxassetid://0"
-            NightSky.StarCount=3000
-        end
-        NightSky.Parent=Lighting
-    else
-        if NightSky then NightSky.Parent=nil end
-        if OldLighting.Sky then OldLighting.Sky.Parent=Lighting end
-    end
-end
-
--- ===== АТМОСФЕРА =====
-local ATMObj=nil
-function SetAtm(on)
-    if on then
-        if not ATMObj then
-            ATMObj=Instance.new("Atmosphere")
-            ATMObj.Name="CSGO_Atm"
-        end
-        ATMObj.Density=Config.ATMDensity/100
-        ATMObj.Offset=0
-        ATMObj.Color=Color3.fromRGB(120,140,180)
-        ATMObj.Decay=Color3.fromRGB(60,70,100)
-        ATMObj.Glare=0.5
-        ATMObj.Haze=1.5
-        ATMObj.Parent=Lighting
-    else
-        if ATMObj then ATMObj.Parent=nil end
-    end
-end
+NewsCard(NewsL,"Новое обновление","Добавлены: Silent Aim, Wallbang, ESP, Bullet Tracers, Hitbox, Night, Atmosphere, Custom Scope.","26.09.2026")
 
 -- ===== FOV CIRCLE =====
 local FovGui=Instance.new("ScreenGui")
@@ -725,7 +690,7 @@ FovGui.Name="FOVCircle"
 FovGui.ResetOnSpawn=false
 FovGui.IgnoreGuiInset=true
 FovGui.DisplayOrder=999
-FovGui.Parent=LP:WaitForChild("PlayerGui")
+FovGui.Parent=GetContainer()
 
 local FovFrame=Instance.new("Frame",FovGui)
 FovFrame.Size=UDim2.new(0,300,0,300)
@@ -753,6 +718,14 @@ RunService.RenderStepped:Connect(function()
     FovFrame.Size=UDim2.new(0,Config.FOV*2,0,Config.FOV*2)
     FovFrame.Visible=Config.SilentAim
 end)
+
+-- Открытие при старте
+Main.Size=UDim2.new(0,0,0,0)
+Main.Position=UDim2.new(0.5,0,0.5,0)
+task.wait(0.1)
+TweenService:Create(Main,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
+    Size=origSize,Position=origPos
+}):Play()
 -- ⚡ FameSence Main | PART 3/3 ⚡
 
 -- ===== SILENT AIM =====
@@ -1005,11 +978,11 @@ RunService.RenderStepped:Connect(function(dt)
     if not c then return end
     local root=c:FindFirstChild("HumanoidRootPart")
     local head=c:FindFirstChild("Head")
-    
+
     if Config.Spinbot and root then
         root.CFrame=CFrame.new(root.Position)*CFrame.Angles(0,math.rad((tick()*2000)%360),0)
     end
-    
+
     if Config.ThirdPerson and head then
         for _,p in ipairs(c:GetDescendants()) do
             if p:IsA("BasePart") and p.Name~="HumanoidRootPart" then
@@ -1022,7 +995,7 @@ RunService.RenderStepped:Connect(function(dt)
             Camera.CFrame=Camera.CFrame+(Camera.CFrame.LookVector*-Config.CamDist)+Vector3.new(0,3,0)
         end
     end
-    
+
     if Config.FakeAngles and root then
         local look=Camera.CFrame.LookVector
         local fakeDir
@@ -1084,33 +1057,11 @@ RunService.Heartbeat:Connect(function()
         Lighting.ClockTime=0
         Lighting.FogEnd=2000
         Lighting.FogStart=200
-        Lighting.GlobalShadows=true
     end
 end)
 
--- ===== ESP (вся функция как одно целое) =====
-local ESPConfig={
-    BoxEnabled=true,
-    BoxColor=WH,
-    BoxThickness=1.5,
-    HealthBarEnabled=true,
-    SkeletonEnabled=true,
-    SkeletonColor=WH,
-    SkeletonThickness=1,
-    ShowName=true,
-    ShowDistance=true,
-    MaxDist=1500,
-}
-
-local function GetGuiParent()
-    local ok,pg=pcall(function() return LP:WaitForChild("PlayerGui",5) end)
-    if ok and pg then return pg end
-    local s,r=pcall(function() if gethui then return gethui() end end)
-    if s and r then return r end
-    return CoreGui
-end
-
-local ESPParent=GetGuiParent()
+-- ===== ESP =====
+local ESPParent=GetContainer()
 if ESPParent:FindFirstChild("BloxESP") then
     ESPParent.BloxESP:Destroy()
 end
@@ -1143,30 +1094,30 @@ local ESPObjects={}
 
 local function CreateESP(plr)
     if plr==LP or ESPObjects[plr] then return end
-    
+
     local function SetupCharacter(char)
         if not char then return end
         local hrp=char:FindFirstChild("HumanoidRootPart") or char:WaitForChild("HumanoidRootPart",10)
         if not hrp then return end
-        
+
         local boxGui=Instance.new("BillboardGui",ESPScreen)
         boxGui.Size=UDim2.new(4,0,5.5,0)
         boxGui.AlwaysOnTop=true
-        boxGui.MaxDistance=ESPConfig.MaxDist
+        boxGui.MaxDistance=1500
         boxGui.Adornee=hrp
         local boxFrame=Instance.new("Frame",boxGui)
         boxFrame.Size=UDim2.new(1,0,1,0)
         boxFrame.BackgroundTransparency=1
         local boxStroke=Instance.new("UIStroke",boxFrame)
-        boxStroke.Thickness=ESPConfig.BoxThickness
-        boxStroke.Color=ESPConfig.BoxColor
+        boxStroke.Thickness=1.5
+        boxStroke.Color=WH
         boxStroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
-        
+
         local hpGui=Instance.new("BillboardGui",ESPScreen)
         hpGui.Size=UDim2.new(0.6,0,5.5,0)
         hpGui.StudsOffset=Vector3.new(-2.3,0,0)
         hpGui.AlwaysOnTop=true
-        hpGui.MaxDistance=ESPConfig.MaxDist
+        hpGui.MaxDistance=1500
         hpGui.Adornee=hrp
         local hpBg=Instance.new("Frame",hpGui)
         hpBg.Size=UDim2.new(1,0,1,0)
@@ -1175,12 +1126,12 @@ local function CreateESP(plr)
         local hpFill=Instance.new("Frame",hpBg)
         hpFill.Size=UDim2.new(1,0,1,0)
         hpFill.BackgroundColor3=Color3.fromRGB(0,255,0)
-        
+
         local nameGui=Instance.new("BillboardGui",ESPScreen)
         nameGui.Size=UDim2.new(5,0,1,0)
         nameGui.StudsOffset=Vector3.new(0,3.3,0)
         nameGui.AlwaysOnTop=true
-        nameGui.MaxDistance=ESPConfig.MaxDist
+        nameGui.MaxDistance=1500
         nameGui.Adornee=hrp
         local nameLbl=Instance.new("TextLabel",nameGui)
         nameLbl.Size=UDim2.new(1,0,1,0)
@@ -1190,12 +1141,12 @@ local function CreateESP(plr)
         nameLbl.TextColor3=WH
         nameLbl.TextStrokeTransparency=0.3
         nameLbl.Font=Enum.Font.GothamBold
-        
+
         local distGui=Instance.new("BillboardGui",ESPScreen)
         distGui.Size=UDim2.new(5,0,0.8,0)
         distGui.StudsOffset=Vector3.new(0,-3.3,0)
         distGui.AlwaysOnTop=true
-        distGui.MaxDistance=ESPConfig.MaxDist
+        distGui.MaxDistance=1500
         distGui.Adornee=hrp
         local distLbl=Instance.new("TextLabel",distGui)
         distLbl.Size=UDim2.new(1,0,1,0)
@@ -1205,18 +1156,18 @@ local function CreateESP(plr)
         distLbl.TextColor3=Color3.fromRGB(220,220,220)
         distLbl.TextStrokeTransparency=0.3
         distLbl.Font=Enum.Font.GothamBold
-        
+
         local bones=GetBones(char)
         local skLines={}
         for i=1,#bones do
             local line=Drawing.new("Line")
-            line.Thickness=ESPConfig.SkeletonThickness
-            line.Color=ESPConfig.SkeletonColor
+            line.Thickness=1
+            line.Color=WH
             line.Transparency=1
             line.Visible=false
             skLines[i]=line
         end
-        
+
         ESPObjects[plr]={
             box=boxGui,boxStroke=boxStroke,
             hp=hpGui,hpFill=hpFill,hpBg=hpBg,
@@ -1224,7 +1175,7 @@ local function CreateESP(plr)
             dist=distGui,distLbl=distLbl,
             sk=skLines,bones=bones,char=char,
         }
-        
+
         local hum=char:FindFirstChildOfClass("Humanoid")
         if hum then
             hum.Died:Connect(function()
@@ -1240,7 +1191,7 @@ local function CreateESP(plr)
             end)
         end
     end
-    
+
     plr.CharacterAdded:Connect(SetupCharacter)
     if plr.Character then SetupCharacter(plr.Character) end
 end
@@ -1268,4 +1219,175 @@ RunService.RenderStepped:Connect(function()
             ESPObjects[plr]=nil
             continue
         end
-    
+        local dist=(Camera.CFrame.Position-hrp.Position).Magnitude
+        if not Config.ESP or dist>1500 then
+            esp.box.Enabled=false
+            esp.hp.Enabled=false
+            esp.name.Enabled=false
+            esp.dist.Enabled=false
+            for _,l in ipairs(esp.sk) do l.Visible=false end
+            continue
+        end
+        esp.box.Enabled=true
+        esp.box.Adornee=hrp
+        esp.hp.Enabled=true
+        esp.hp.Adornee=hrp
+        local hpRatio=math.clamp(hum.Health/hum.MaxHealth,0,1)
+        esp.hpFill.Size=UDim2.new(1,0,hpRatio,0)
+        esp.hpFill.Position=UDim2.new(0,0,1-hpRatio,0)
+        if hpRatio>0.6 then
+            esp.hpFill.BackgroundColor3=Color3.fromRGB(0,255,0)
+        elseif hpRatio>0.3 then
+            esp.hpFill.BackgroundColor3=Color3.fromRGB(255,200,0)
+        else
+            esp.hpFill.BackgroundColor3=Color3.fromRGB(255,0,0)
+        end
+        esp.name.Enabled=true
+        esp.name.Adornee=hrp
+        esp.dist.Enabled=true
+        esp.dist.Adornee=hrp
+        esp.distLbl.Text=math.floor(dist).."m"
+        for i,bone in ipairs(esp.bones) do
+            local p1=char:FindFirstChild(bone[1])
+            local p2=char:FindFirstChild(bone[2])
+            local line=esp.sk[i]
+            if p1 and p2 and line then
+                local s1,on1=Camera:WorldToViewportPoint(p1.Position)
+                local s2,on2=Camera:WorldToViewportPoint(p2.Position)
+                if on1 and on2 then
+                    line.From=Vector2.new(s1.X,s1.Y)
+                    line.To=Vector2.new(s2.X,s2.Y)
+                    line.Visible=true
+                else
+                    line.Visible=false
+                end
+            elseif line then
+                line.Visible=false
+            end
+        end
+    end
+end)
+
+for _,plr in pairs(Players:GetPlayers()) do CreateESP(plr) end
+Players.PlayerAdded:Connect(CreateESP)
+
+Players.PlayerRemoving:Connect(function(plr)
+    local esp=ESPObjects[plr]
+    if esp then
+        if esp.box then esp.box:Destroy() end
+        if esp.hp then esp.hp:Destroy() end
+        if esp.name then esp.name:Destroy() end
+        if esp.dist then esp.dist:Destroy() end
+        for _,l in ipairs(esp.sk) do l:Remove() end
+        ESPObjects[plr]=nil
+    end
+end)
+
+-- ===== CUSTOM SCOPE =====
+task.spawn(function()
+    local CustomScope=CoreGui:FindFirstChild("CustomScopeGui")
+    if not CustomScope then
+        CustomScope=Instance.new("ScreenGui")
+        CustomScope.Name="CustomScopeGui"
+        CustomScope.ResetOnSpawn=false
+        CustomScope.IgnoreGuiInset=true
+        CustomScope.DisplayOrder=999
+        CustomScope.Parent=CoreGui
+    end
+    local ScopeFrame=Instance.new("Frame",CustomScope)
+    ScopeFrame.Size=UDim2.new(0,300,0,300)
+    ScopeFrame.Position=UDim2.new(0.5,-150,0.5,-150)
+    ScopeFrame.BackgroundTransparency=1
+    ScopeFrame.Visible=false
+    local HLeft=Instance.new("Frame",ScopeFrame)
+    HLeft.Size=UDim2.new(0.4,0,0,1)
+    HLeft.Position=UDim2.new(0,0,0.5,-0.5)
+    HLeft.BackgroundColor3=WH
+    HLeft.BorderSizePixel=0
+    local HRight=Instance.new("Frame",ScopeFrame)
+    HRight.Size=UDim2.new(0.4,0,0,1)
+    HRight.Position=UDim2.new(0.6,0,0.5,-0.5)
+    HRight.BackgroundColor3=WH
+    HRight.BorderSizePixel=0
+    local VTop=Instance.new("Frame",ScopeFrame)
+    VTop.Size=UDim2.new(0,1,0.4,0)
+    VTop.Position=UDim2.new(0.5,-0.5,0,0)
+    VTop.BackgroundColor3=WH
+    VTop.BorderSizePixel=0
+    local VBottom=Instance.new("Frame",ScopeFrame)
+    VBottom.Size=UDim2.new(0,1,0.4,0)
+    VBottom.Position=UDim2.new(0.5,-0.5,0.6,0)
+    VBottom.BackgroundColor3=WH
+    VBottom.BorderSizePixel=0
+    for i=1,3 do
+        local markL=Instance.new("Frame",ScopeFrame)
+        markL.Size=UDim2.new(0,6,0,1)
+        markL.Position=UDim2.new(0.4-(i*0.05),0,0.5,-0.5)
+        markL.BackgroundColor3=WH
+        markL.BorderSizePixel=0
+        local markR=Instance.new("Frame",ScopeFrame)
+        markR.Size=UDim2.new(0,6,0,1)
+        markR.Position=UDim2.new(0.6+(i*0.05)-0.02,0,0.5,-0.5)
+        markR.BackgroundColor3=WH
+        markR.BorderSizePixel=0
+        local markT=Instance.new("Frame",ScopeFrame)
+        markT.Size=UDim2.new(0,1,0,6)
+        markT.Position=UDim2.new(0.5,-0.5,0.4-(i*0.05),0)
+        markT.BackgroundColor3=WH
+        markT.BorderSizePixel=0
+        local markB=Instance.new("Frame",ScopeFrame)
+        markB.Size=UDim2.new(0,1,0,6)
+        markB.Position=UDim2.new(0.5,-0.5,0.6+(i*0.05)-0.02,0)
+        markB.BackgroundColor3=WH
+        markB.BorderSizePixel=0
+    end
+    local Dot=Instance.new("Frame",ScopeFrame)
+    Dot.Size=UDim2.new(0,2,0,2)
+    Dot.Position=UDim2.new(0.5,-1,0.5,-1)
+    Dot.BackgroundColor3=WH
+    Dot.BorderSizePixel=0
+    local dotStroke=Instance.new("UIStroke",Dot)
+    dotStroke.Thickness=1
+    dotStroke.Color=Color3.fromRGB(0,0,0)
+    dotStroke.Transparency=0.3
+    local CachedSniperScope=nil
+    local ScopeVisible=false
+    RunService.RenderStepped:Connect(function()
+        if not Config.CustomScope then
+            ScopeFrame.Visible=false
+            if CachedSniperScope and CachedSniperScope.Size~=UDim2.new(1,0,1,0) then
+                CachedSniperScope.Size=UDim2.new(1,0,1,0)
+            end
+            return
+        end
+        if CachedSniperScope and not CachedSniperScope.Parent then
+            CachedSniperScope=nil
+        end
+        if not CachedSniperScope then
+            local pg=LP:FindFirstChild("PlayerGui")
+            if pg then
+                local ok,sc=pcall(function()
+                    return pg.MainGui.Gameplay.Middle.SniperScope
+                end)
+                if ok and sc then
+                    CachedSniperScope=sc
+                end
+            end
+        end
+        if CachedSniperScope then
+            if CachedSniperScope.Visible then
+                CachedSniperScope.Size=UDim2.new(0,0,0,0)
+                CachedSniperScope.Visible=false
+                ScopeVisible=true
+            else
+                if CachedSniperScope.Size~=UDim2.new(1,0,1,0) then
+                    CachedSniperScope.Size=UDim2.new(1,0,1,0)
+                end
+                ScopeVisible=false
+            end
+        end
+        ScopeFrame.Visible=ScopeVisible
+    end)
+end)
+
+print("✅ FameSence Main loaded!")
