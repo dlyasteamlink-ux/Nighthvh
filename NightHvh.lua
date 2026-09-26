@@ -24,7 +24,6 @@ local OldLighting={
     Ambient=Lighting.Ambient, OutdoorAmbient=Lighting.OutdoorAmbient,
     Brightness=Lighting.Brightness, ClockTime=Lighting.ClockTime,
     FogEnd=Lighting.FogEnd, FogStart=Lighting.FogStart,
-    GlobalShadows=Lighting.GlobalShadows,
     Sky=Lighting:FindFirstChildOfClass("Sky"),
 }
 
@@ -42,7 +41,6 @@ local LINE=Color3.fromRGB(38,38,38)
 local function GetContainer()
     local s,r=pcall(function()
         if gethui then return gethui() end
-        if syn and syn.protect_gui then return CoreGui end
         return LP:FindFirstChildOfClass("PlayerGui") or CoreGui
     end)
     return s and r or CoreGui
@@ -58,8 +56,7 @@ Gui.Name="FameSenceUI"
 Gui.Parent=TargetContainer
 Gui.ResetOnSpawn=false
 
-local Main=Instance.new("Frame")
-Main.Parent=Gui
+local Main=Instance.new("Frame",Gui)
 Main.Size=UDim2.new(0,620,0,440)
 Main.Position=UDim2.new(0.5,-310,0.5,-220)
 Main.BackgroundColor3=BG1
@@ -67,18 +64,7 @@ Main.BorderSizePixel=0
 Main.Active=true
 Main.ClipsDescendants=true
 Instance.new("UICorner",Main).CornerRadius=UDim.new(0,10)
-
-local MainStroke=Instance.new("UIStroke",Main)
-MainStroke.Color=LINE
-MainStroke.Thickness=1
-MainStroke.Transparency=0.4
-
-local MainGrad=Instance.new("UIGradient",Main)
-MainGrad.Color=ColorSequence.new({
-    ColorSequenceKeypoint.new(0,Color3.fromRGB(20,20,20)),
-    ColorSequenceKeypoint.new(1,Color3.fromRGB(10,10,10))
-})
-MainGrad.Rotation=90
+Instance.new("UIStroke",Main).Color=LINE
 
 local Header=Instance.new("Frame",Main)
 Header.Size=UDim2.new(1,0,0,55)
@@ -86,13 +72,6 @@ Header.BackgroundColor3=BG2
 Header.BorderSizePixel=0
 Header.ZIndex=10
 Instance.new("UICorner",Header).CornerRadius=UDim.new(0,10)
-
-local HeaderGrad=Instance.new("UIGradient",Header)
-HeaderGrad.Color=ColorSequence.new({
-    ColorSequenceKeypoint.new(0,Color3.fromRGB(30,30,30)),
-    ColorSequenceKeypoint.new(0.5,Color3.fromRGB(22,22,22)),
-    ColorSequenceKeypoint.new(1,Color3.fromRGB(30,30,30))
-})
 
 local IconFrame=Instance.new("Frame",Header)
 IconFrame.Size=UDim2.new(0,30,0,30)
@@ -145,17 +124,6 @@ LogoGrad.Color=ColorSequence.new({
     ColorSequenceKeypoint.new(1,Color3.fromRGB(90,90,90))
 })
 
-local VersionLbl=Instance.new("TextLabel",Header)
-VersionLbl.Size=UDim2.new(0,60,1,0)
-VersionLbl.Position=UDim2.new(0,210,0,0)
-VersionLbl.BackgroundTransparency=1
-VersionLbl.Text="v1.0"
-VersionLbl.TextColor3=GD
-VersionLbl.Font=Enum.Font.GothamBold
-VersionLbl.TextSize=11
-VersionLbl.TextXAlignment=Enum.TextXAlignment.Left
-VersionLbl.ZIndex=11
-
 local CloseBtn=Instance.new("TextButton",Header)
 CloseBtn.Size=UDim2.new(0,32,0,32)
 CloseBtn.Position=UDim2.new(1,-44,0.5,-16)
@@ -168,7 +136,6 @@ CloseBtn.BorderSizePixel=0
 CloseBtn.AutoButtonColor=false
 CloseBtn.ZIndex=11
 Instance.new("UICorner",CloseBtn).CornerRadius=UDim.new(0,8)
-Instance.new("UIStroke",CloseBtn).Color=Color3.fromRGB(45,45,45)
 
 local Sidebar=Instance.new("Frame",Main)
 Sidebar.Size=UDim2.new(0,160,1,-55)
@@ -176,13 +143,6 @@ Sidebar.Position=UDim2.new(0,0,0,55)
 Sidebar.BackgroundColor3=BG2
 Sidebar.BorderSizePixel=0
 Sidebar.ZIndex=10
-
-local SideGrad=Instance.new("UIGradient",Sidebar)
-SideGrad.Color=ColorSequence.new({
-    ColorSequenceKeypoint.new(0,Color3.fromRGB(22,22,22)),
-    ColorSequenceKeypoint.new(1,Color3.fromRGB(14,14,14))
-})
-SideGrad.Rotation=90
 
 local SideLine=Instance.new("Frame",Sidebar)
 SideLine.Size=UDim2.new(0,1,1,0)
@@ -271,17 +231,6 @@ local function CreateTab(name)
     Pages[name]=page
     TabBtns[name]=title
     TabLines[name]=line
-
-    btn.MouseEnter:Connect(function()
-        if title.TextColor3~=GL then
-            TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.3}):Play()
-        end
-    end)
-    btn.MouseLeave:Connect(function()
-        if title.TextColor3~=GL then
-            TweenService:Create(btn,TweenInfo.new(0.15),{BackgroundTransparency=0.5}):Play()
-        end
-    end)
 
     btn.MouseButton1Click:Connect(function()
         for _,p in pairs(Pages) do p.Visible=false end
@@ -381,6 +330,7 @@ end)
 UIS.InputEnded:Connect(function(i)
     if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dg=false end
 end)
+-- ⚡ FameSence Main | PART 2/3 ⚡
 
 local function Desc(parent,text)
     local d=Instance.new("TextLabel",parent)
@@ -393,57 +343,55 @@ local function Desc(parent,text)
     d.TextXAlignment=Enum.TextXAlignment.Left
 end
 
+-- ===== TOGGLE (как в тесте — работает на телефоне) =====
 local function Toggle(parent,text,default,cb)
-    local b=Instance.new("TextButton",parent)
-    b.Size=UDim2.new(1,0,0,32)
-    b.BackgroundColor3=BG3
-    b.BackgroundTransparency=0.5
-    b.Text="" b.AutoButtonColor=false
-    Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
-    local l=Instance.new("TextLabel",b)
-    l.Size=UDim2.new(1,-50,1,0)
-    l.Position=UDim2.new(0,12,0,0)
-    l.BackgroundTransparency=1
-    l.Text=text
-    l.TextColor3=GM
-    l.Font=Enum.Font.GothamBold
-    l.TextSize=11
-    l.TextXAlignment=Enum.TextXAlignment.Left
-    local ind=Instance.new("Frame",b)
-    ind.Size=UDim2.new(0,28,0,14)
-    ind.Position=UDim2.new(1,-40,0.5,-7)
-    ind.BackgroundColor3=Color3.fromRGB(40,40,40)
-    ind.BorderSizePixel=0
-    Instance.new("UICorner",ind).CornerRadius=UDim.new(1,0)
-    local dot=Instance.new("Frame",ind)
-    dot.Size=UDim2.new(0,10,0,10)
-    dot.Position=UDim2.new(0,2,0.5,-5)
-    dot.BackgroundColor3=GL
-    dot.BorderSizePixel=0
-    Instance.new("UICorner",dot).CornerRadius=UDim.new(1,0)
+    local btn=Instance.new("TextButton",parent)
+    btn.Size=UDim2.new(1,0,0,32)
+    btn.BackgroundColor3=BG3
+    btn.BackgroundTransparency=0.5
+    btn.Text=text..": OFF"
+    btn.TextColor3=GM
+    btn.Font=Enum.Font.GothamBold
+    btn.TextSize=11
+    btn.TextXAlignment=Enum.TextXAlignment.Left
+    btn.AutoButtonColor=false
+    btn.BorderSizePixel=0
+    Instance.new("UICorner",btn).CornerRadius=UDim.new(0,6)
+    
+    local pad=Instance.new("UIPadding",btn)
+    pad.PaddingLeft=UDim.new(0,12)
+    
     local state=default
     if cb then cb(state) end
-    b.MouseButton1Click:Connect(function()
+    if state then
+        btn.Text=text..": ON"
+        btn.BackgroundColor3=Color3.fromRGB(80,0,140)
+        btn.TextColor3=GL
+    end
+    
+    btn.MouseButton1Click:Connect(function()
         state=not state
         if state then
-            ind.BackgroundColor3=Color3.fromRGB(90,90,100)
-            dot.Position=UDim2.new(1,-12,0.5,-5)
-            l.TextColor3=GL
+            btn.Text=text..": ON"
+            btn.BackgroundColor3=Color3.fromRGB(80,0,140)
+            btn.TextColor3=GL
         else
-            ind.BackgroundColor3=Color3.fromRGB(40,40,40)
-            dot.Position=UDim2.new(0,2,0.5,-5)
-            l.TextColor3=GM
+            btn.Text=text..": OFF"
+            btn.BackgroundColor3=BG3
+            btn.TextColor3=GM
         end
         if cb then cb(state) end
     end)
 end
 
+-- ===== SLIDER (как в тесте) =====
 local function Slider(parent,text,mn,mx,dv,cb)
     local f=Instance.new("Frame",parent)
-    f.Size=UDim2.new(1,0,0,42)
+    f.Size=UDim2.new(1,0,0,50)
     f.BackgroundColor3=BG3
     f.BackgroundTransparency=0.5
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
+    
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,0,20)
     l.Position=UDim2.new(0,12,0,2)
@@ -453,40 +401,49 @@ local function Slider(parent,text,mn,mx,dv,cb)
     l.Font=Enum.Font.GothamBold
     l.TextSize=11
     l.TextXAlignment=Enum.TextXAlignment.Left
+    
     local b=Instance.new("Frame",f)
-    b.Size=UDim2.new(1,-24,0,4)
-    b.Position=UDim2.new(0,12,1,-12)
+    b.Size=UDim2.new(1,-24,0,6)
+    b.Position=UDim2.new(0,12,1,-18)
     b.BackgroundColor3=Color3.fromRGB(40,40,40)
     b.BorderSizePixel=0
     Instance.new("UICorner",b).CornerRadius=UDim.new(1,0)
+    
     local fl=Instance.new("Frame",b)
     local ip=(dv-mn)/(mx-mn)
     fl.Size=UDim2.new(ip,0,1,0)
     fl.BackgroundColor3=PU
     fl.BorderSizePixel=0
     Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
+    
     local bt=Instance.new("TextButton",b)
-    bt.Size=UDim2.new(0,16,0,16)
-    bt.Position=UDim2.new(ip,-8,0.5,-8)
+    bt.Size=UDim2.new(0,20,0,20)
+    bt.Position=UDim2.new(ip,-10,0.5,-10)
     bt.BackgroundColor3=Color3.fromRGB(220,200,255)
     bt.Text=""
+    bt.BorderSizePixel=0
     Instance.new("UICorner",bt).CornerRadius=UDim.new(1,0)
-    local dr=false
+    
+    local dragging=false
     bt.InputBegan:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dr=true end
+        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
+            dragging=true
+        end
     end)
     UIS.InputEnded:Connect(function(i)
-        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then dr=false end
+        if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
+            dragging=false
+        end
     end)
     UIS.InputChanged:Connect(function(i)
-        if dr and (i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseMovement) then
-            local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
-            local v=math.floor((mx-mn)*p+mn+0.5)
-            fl.Size=UDim2.new(p,0,1,0)
-            bt.Position=UDim2.new(p,-8,0.5,-8)
-            l.Text=text..": "..v
-            if cb then cb(v) end
-        end
+        if not dragging then return end
+        if i.UserInputType~=Enum.UserInputType.Touch and i.UserInputType~=Enum.UserInputType.MouseMovement then return end
+        local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
+        local v=math.floor((mx-mn)*p+mn+0.5)
+        fl.Size=UDim2.new(p,0,1,0)
+        bt.Position=UDim2.new(p,-10,0.5,-10)
+        l.Text=text..": "..v
+        if cb then cb(v) end
     end)
 end
 
@@ -504,7 +461,6 @@ local function Button(parent,text,cb)
     b.MouseButton1Click:Connect(function() if cb then cb(b) end end)
     return b
 end
--- ⚡ FameSence Main | PART 2/3 ⚡
 
 -- ===== SETNIGHT / SETATM =====
 local NightSky
@@ -551,28 +507,27 @@ function SetAtm(on)
 end
 
 -- ===== НАПОЛНЕНИЕ RAGE =====
-Desc(RageL,"Silent Aim — наводит пули в голову врага в FOV")
+Desc(RageL,"Silent Aim — наводит пули в голову врага")
 Toggle(RageL,"Silent Aim",false,function(v) Config.SilentAim=v end)
 Desc(RageL,"FOV — радиус поиска врага")
 Slider(RageL,"FOV",20,400,150,function(v) Config.FOV=v end)
-
-Desc(RageR,"Wallbang — прострел через стены")
+Desc(RageR,"Wallbang — стрельба через стены")
 Toggle(RageR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
 -- ===== НАПОЛНЕНИЕ VISUALS =====
-Desc(VisualsL,"Bullet Tracers — белые трассеры с градиентом")
+Desc(VisualsL,"Bullet Tracers — белые трассеры")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(VisualsL,"ESP — боксы, скелет, HP, имена")
 Toggle(VisualsL,"ESP",false,function(v) Config.ESP=v end)
-Desc(VisualsL,"Hitbox — увеличенная прозрачная голова")
+Desc(VisualsL,"Hitbox — увеличенная голова")
 Toggle(VisualsL,"Hitbox",false,function(v) Config.Hitbox=v end)
 Slider(VisualsL,"Hitbox Size",1,16,2,function(v) Config.HitboxSize=v end)
 
-Desc(VisualsR,"Night — ночное небо со звёздами")
+Desc(VisualsR,"Night — ночное небо")
 Toggle(VisualsR,"Night",false,function(v) Config.Night=v SetNight(v) end)
-Desc(VisualsR,"Custom Scope — белый прицел CS:GO")
+Desc(VisualsR,"Custom Scope — белый прицел")
 Toggle(VisualsR,"Custom Scope",true,function(v) Config.CustomScope=v end)
-Desc(VisualsR,"Atmosphere — туман как в CS:GO")
+Desc(VisualsR,"Atmosphere — туман CS:GO")
 Toggle(VisualsR,"Atmosphere",false,function(v) Config.Atmosphere=v SetAtm(v) end)
 Slider(VisualsR,"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config.Atmosphere then SetAtm(true) end end)
 Desc(VisualsR,"Hit Sound — звук попадания")
@@ -584,10 +539,10 @@ Toggle(MovementL,"Third Person",false,function(v) Config.ThirdPerson=v end)
 Slider(MovementL,"Cam Distance",5,30,11,function(v) Config.CamDist=v end)
 Desc(MovementL,"Fake Angles — тело смотрит назад")
 Toggle(MovementL,"Fake Angles",false,function(v) Config.FakeAngles=v end)
-Desc(MovementL,"Head Down — лицо смотрит в пол")
+Desc(MovementL,"Head Down — лицо в пол")
 Toggle(MovementL,"Head Down",false,function(v) Config.HeadDown=v end)
 
-Desc(MovementR,"Spinbot — быстрое вращение персонажа")
+Desc(MovementR,"Spinbot — вращение")
 Toggle(MovementR,"Spinbot",false,function(v) Config.Spinbot=v end)
 
 Button(MovementR,"Mode: Back",function(b)
@@ -605,7 +560,6 @@ local function InfoLine(parent,label,value)
     f.Size=UDim2.new(1,0,0,32)
     f.BackgroundColor3=BG3
     f.BackgroundTransparency=0.5
-    f.BorderSizePixel=0
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,1,0)
@@ -630,7 +584,6 @@ end
 InfoLine(InfoL,"Версия","v1.0")
 InfoLine(InfoL,"Автор","Squez3")
 InfoLine(InfoL,"Игрок",LP.Name)
-
 InfoLine(InfoR,"Статус","Online")
 InfoLine(InfoR,"Режим","Rage")
 InfoLine(InfoR,"Дата","26.09.2026")
@@ -641,13 +594,8 @@ local function NewsCard(parent,title,text,date)
     f.Size=UDim2.new(1,0,0,100)
     f.BackgroundColor3=BG3
     f.BackgroundTransparency=0.5
-    f.BorderSizePixel=0
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,8)
-    local st=Instance.new("UIStroke",f)
-    st.Color=AC
-    st.Transparency=0.8
-    st.Thickness=1
-
+    Instance.new("UIStroke",f).Color=AC
     local l1=Instance.new("TextLabel",f)
     l1.Size=UDim2.new(1,-20,0,22)
     l1.Position=UDim2.new(0,12,0,10)
@@ -657,7 +605,6 @@ local function NewsCard(parent,title,text,date)
     l1.Font=Enum.Font.GothamBold
     l1.TextSize=13
     l1.TextXAlignment=Enum.TextXAlignment.Left
-
     local l2=Instance.new("TextLabel",f)
     l2.Size=UDim2.new(1,-20,0,50)
     l2.Position=UDim2.new(0,12,0,34)
@@ -669,7 +616,6 @@ local function NewsCard(parent,title,text,date)
     l2.TextXAlignment=Enum.TextXAlignment.Left
     l2.TextYAlignment=Enum.TextYAlignment.Top
     l2.TextWrapped=true
-
     local l3=Instance.new("TextLabel",f)
     l3.Size=UDim2.new(1,-20,0,14)
     l3.Position=UDim2.new(0,12,1,-20)
@@ -681,8 +627,8 @@ local function NewsCard(parent,title,text,date)
     l3.TextXAlignment=Enum.TextXAlignment.Left
 end
 
-NewsCard(NewsL,"Добро пожаловать!","FameSence v1.0 успешно загружен. Используй вкладки Rage, Visuals и Movement для настройки.","26.09.2026")
-NewsCard(NewsL,"Новое обновление","Добавлены: Silent Aim, Wallbang, ESP, Bullet Tracers, Hitbox, Night, Atmosphere, Custom Scope.","26.09.2026")
+NewsCard(NewsL,"Добро пожаловать!","FameSence v1.0 загружен. Настраивай функции во вкладках.","26.09.2026")
+NewsCard(NewsL,"Обновление","Добавлены: Silent Aim, Wallbang, ESP, Tracers.","26.09.2026")
 
 -- ===== FOV CIRCLE =====
 local FovGui=Instance.new("ScreenGui")
@@ -719,13 +665,15 @@ RunService.RenderStepped:Connect(function()
     FovFrame.Visible=Config.SilentAim
 end)
 
--- Открытие при старте
+-- Открытие
 Main.Size=UDim2.new(0,0,0,0)
 Main.Position=UDim2.new(0.5,0,0.5,0)
 task.wait(0.1)
 TweenService:Create(Main,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{
     Size=origSize,Position=origPos
 }):Play()
+
+print("✅ FameSence PART 2 loaded!")
 -- ⚡ FameSence Main | PART 3/3 ⚡
 
 -- ===== SILENT AIM =====
@@ -1227,7 +1175,7 @@ RunService.RenderStepped:Connect(function()
             esp.dist.Enabled=false
             for _,l in ipairs(esp.sk) do l.Visible=false end
             continue
-        end
+      end
         esp.box.Enabled=true
         esp.box.Adornee=hrp
         esp.hp.Enabled=true
@@ -1390,4 +1338,4 @@ task.spawn(function()
     end)
 end)
 
-print("✅ FameSence Main loaded!")
+print("✅ FameSence Main loaded!")  
