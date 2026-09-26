@@ -172,7 +172,7 @@ local TabLines={}
 
 local function CreateTab(name)
     local btn=Instance.new("TextButton",TabHolder)
-    btn.Size=UDim2.new(1,0,0,38)
+    btn.Size=UDim2.new(1,0,0,42)
     btn.BackgroundColor3=BG3
     btn.BackgroundTransparency=0.5
     btn.Text=""
@@ -197,7 +197,7 @@ local function CreateTab(name)
     title.Text=name
     title.TextColor3=Color3.fromRGB(110,110,110)
     title.Font=Enum.Font.GothamBold
-    title.TextSize=13
+    title.TextSize=14
     title.TextXAlignment=Enum.TextXAlignment.Left
     title.ZIndex=12
 
@@ -269,21 +269,18 @@ local T1=Instance.new("Frame",ToggleBtn)
 T1.Size=UDim2.new(0,3,0,24)
 T1.Position=UDim2.new(0,17,0.5,-12)
 T1.BackgroundColor3=AC
-T1.BorderSizePixel=0
 Instance.new("UICorner",T1).CornerRadius=UDim.new(0,1)
 
 local T2=Instance.new("Frame",ToggleBtn)
 T2.Size=UDim2.new(0,14,0,3)
 T2.Position=UDim2.new(0,19,0,14)
 T2.BackgroundColor3=AC
-T2.BorderSizePixel=0
 Instance.new("UICorner",T2).CornerRadius=UDim.new(0,1)
 
 local T3=Instance.new("Frame",ToggleBtn)
 T3.Size=UDim2.new(0,10,0,3)
 T3.Position=UDim2.new(0,19,0,23)
 T3.BackgroundColor3=AC
-T3.BorderSizePixel=0
 Instance.new("UICorner",T3).CornerRadius=UDim.new(0,1)
 
 local origSize=UDim2.new(0,620,0,440)
@@ -343,16 +340,16 @@ local function Desc(parent,text)
     d.TextXAlignment=Enum.TextXAlignment.Left
 end
 
--- ===== TOGGLE (как в тесте — работает на телефоне) =====
+-- ===== TOGGLE (большая кнопка, вся область кликабельна) =====
 local function Toggle(parent,text,default,cb)
     local btn=Instance.new("TextButton",parent)
-    btn.Size=UDim2.new(1,0,0,32)
+    btn.Size=UDim2.new(1,0,0,42)
     btn.BackgroundColor3=BG3
     btn.BackgroundTransparency=0.5
     btn.Text=text..": OFF"
     btn.TextColor3=GM
     btn.Font=Enum.Font.GothamBold
-    btn.TextSize=11
+    btn.TextSize=12
     btn.TextXAlignment=Enum.TextXAlignment.Left
     btn.AutoButtonColor=false
     btn.BorderSizePixel=0
@@ -360,6 +357,7 @@ local function Toggle(parent,text,default,cb)
     
     local pad=Instance.new("UIPadding",btn)
     pad.PaddingLeft=UDim.new(0,12)
+    pad.PaddingRight=UDim.new(0,12)
     
     local state=default
     if cb then cb(state) end
@@ -384,17 +382,17 @@ local function Toggle(parent,text,default,cb)
     end)
 end
 
--- ===== SLIDER (как в тесте) =====
+-- ===== SLIDER (тап по всей полоске) =====
 local function Slider(parent,text,mn,mx,dv,cb)
     local f=Instance.new("Frame",parent)
-    f.Size=UDim2.new(1,0,0,50)
+    f.Size=UDim2.new(1,0,0,55)
     f.BackgroundColor3=BG3
     f.BackgroundTransparency=0.5
     Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
     
     local l=Instance.new("TextLabel",f)
     l.Size=UDim2.new(1,-20,0,20)
-    l.Position=UDim2.new(0,12,0,2)
+    l.Position=UDim2.new(0,12,0,5)
     l.BackgroundTransparency=1
     l.Text=text..": "..dv
     l.TextColor3=GM
@@ -402,10 +400,13 @@ local function Slider(parent,text,mn,mx,dv,cb)
     l.TextSize=11
     l.TextXAlignment=Enum.TextXAlignment.Left
     
-    local b=Instance.new("Frame",f)
-    b.Size=UDim2.new(1,-24,0,6)
-    b.Position=UDim2.new(0,12,1,-18)
+    -- Вся полоска — кнопка
+    local b=Instance.new("TextButton",f)
+    b.Size=UDim2.new(1,-24,0,10)
+    b.Position=UDim2.new(0,12,1,-20)
     b.BackgroundColor3=Color3.fromRGB(40,40,40)
+    b.Text=""
+    b.AutoButtonColor=false
     b.BorderSizePixel=0
     Instance.new("UICorner",b).CornerRadius=UDim.new(1,0)
     
@@ -416,46 +417,45 @@ local function Slider(parent,text,mn,mx,dv,cb)
     fl.BorderSizePixel=0
     Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
     
-    local bt=Instance.new("TextButton",b)
-    bt.Size=UDim2.new(0,20,0,20)
-    bt.Position=UDim2.new(ip,-10,0.5,-10)
-    bt.BackgroundColor3=Color3.fromRGB(220,200,255)
-    bt.Text=""
-    bt.BorderSizePixel=0
-    Instance.new("UICorner",bt).CornerRadius=UDim.new(1,0)
-    
     local dragging=false
-    bt.InputBegan:Connect(function(i)
+    
+    local function update(i)
+        local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
+        local v=math.floor((mx-mn)*p+mn+0.5)
+        fl.Size=UDim2.new(p,0,1,0)
+        l.Text=text..": "..v
+        if cb then cb(v) end
+    end
+    
+    b.InputBegan:Connect(function(i)
         if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
             dragging=true
+            update(i)
         end
     end)
+    
     UIS.InputEnded:Connect(function(i)
         if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
             dragging=false
         end
     end)
+    
     UIS.InputChanged:Connect(function(i)
         if not dragging then return end
         if i.UserInputType~=Enum.UserInputType.Touch and i.UserInputType~=Enum.UserInputType.MouseMovement then return end
-        local p=math.clamp((i.Position.X-b.AbsolutePosition.X)/b.AbsoluteSize.X,0,1)
-        local v=math.floor((mx-mn)*p+mn+0.5)
-        fl.Size=UDim2.new(p,0,1,0)
-        bt.Position=UDim2.new(p,-10,0.5,-10)
-        l.Text=text..": "..v
-        if cb then cb(v) end
+        update(i)
     end)
 end
 
 local function Button(parent,text,cb)
     local b=Instance.new("TextButton",parent)
-    b.Size=UDim2.new(1,0,0,30)
+    b.Size=UDim2.new(1,0,0,38)
     b.BackgroundColor3=BG3
     b.BackgroundTransparency=0.5
     b.Text=text
     b.TextColor3=GL
     b.Font=Enum.Font.GothamBold
-    b.TextSize=11
+    b.TextSize=12
     b.AutoButtonColor=false
     Instance.new("UICorner",b).CornerRadius=UDim.new(0,6)
     b.MouseButton1Click:Connect(function() if cb then cb(b) end end)
@@ -506,7 +506,7 @@ function SetAtm(on)
     end
 end
 
--- ===== НАПОЛНЕНИЕ RAGE =====
+-- ===== RAGE =====
 Desc(RageL,"Silent Aim — наводит пули в голову врага")
 Toggle(RageL,"Silent Aim",false,function(v) Config.SilentAim=v end)
 Desc(RageL,"FOV — радиус поиска врага")
@@ -514,7 +514,7 @@ Slider(RageL,"FOV",20,400,150,function(v) Config.FOV=v end)
 Desc(RageR,"Wallbang — стрельба через стены")
 Toggle(RageR,"Wallbang",false,function(v) Config.Wallbang=v end)
 
--- ===== НАПОЛНЕНИЕ VISUALS =====
+-- ===== VISUALS =====
 Desc(VisualsL,"Bullet Tracers — белые трассеры")
 Toggle(VisualsL,"Bullet Tracers",false,function(v) Config.Tracers=v end)
 Desc(VisualsL,"ESP — боксы, скелет, HP, имена")
@@ -533,7 +533,7 @@ Slider(VisualsR,"ATM Density",1,100,40,function(v) Config.ATMDensity=v if Config
 Desc(VisualsR,"Hit Sound — звук попадания")
 Toggle(VisualsR,"Hit Sound",false,function(v) Config.HitSound=v end)
 
--- ===== НАПОЛНЕНИЕ MOVEMENT =====
+-- ===== MOVEMENT =====
 Desc(MovementL,"Third Person — вид от 3-го лица")
 Toggle(MovementL,"Third Person",false,function(v) Config.ThirdPerson=v end)
 Slider(MovementL,"Cam Distance",5,30,11,function(v) Config.CamDist=v end)
@@ -588,7 +588,6 @@ InfoLine(InfoR,"Статус","Online")
 InfoLine(InfoR,"Режим","Rage")
 InfoLine(InfoR,"Дата","26.09.2026")
 
--- ===== НОВОСТИ =====
 local function NewsCard(parent,title,text,date)
     local f=Instance.new("Frame",parent)
     f.Size=UDim2.new(1,0,0,100)
@@ -665,7 +664,6 @@ RunService.RenderStepped:Connect(function()
     FovFrame.Visible=Config.SilentAim
 end)
 
--- Открытие
 Main.Size=UDim2.new(0,0,0,0)
 Main.Position=UDim2.new(0.5,0,0.5,0)
 task.wait(0.1)
@@ -1008,7 +1006,21 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ===== ESP =====
+-- ===== ESP (твой скрипт Bloxstrike ESP v2) =====
+local ESPConfig={
+    Enabled=false,
+    BoxEnabled=true,
+    BoxColor=WH,
+    BoxThickness=1.5,
+    HealthBarEnabled=true,
+    SkeletonEnabled=true,
+    SkeletonColor=WH,
+    SkeletonThickness=1,
+    ShowName=true,
+    ShowDistance=true,
+    MaxDist=1500,
+}
+
 local ESPParent=GetContainer()
 if ESPParent:FindFirstChild("BloxESP") then
     ESPParent.BloxESP:Destroy()
@@ -1051,21 +1063,21 @@ local function CreateESP(plr)
         local boxGui=Instance.new("BillboardGui",ESPScreen)
         boxGui.Size=UDim2.new(4,0,5.5,0)
         boxGui.AlwaysOnTop=true
-        boxGui.MaxDistance=1500
+        boxGui.MaxDistance=ESPConfig.MaxDist
         boxGui.Adornee=hrp
         local boxFrame=Instance.new("Frame",boxGui)
         boxFrame.Size=UDim2.new(1,0,1,0)
         boxFrame.BackgroundTransparency=1
         local boxStroke=Instance.new("UIStroke",boxFrame)
-        boxStroke.Thickness=1.5
-        boxStroke.Color=WH
+        boxStroke.Thickness=ESPConfig.BoxThickness
+        boxStroke.Color=ESPConfig.BoxColor
         boxStroke.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
 
         local hpGui=Instance.new("BillboardGui",ESPScreen)
         hpGui.Size=UDim2.new(0.6,0,5.5,0)
         hpGui.StudsOffset=Vector3.new(-2.3,0,0)
         hpGui.AlwaysOnTop=true
-        hpGui.MaxDistance=1500
+        hpGui.MaxDistance=ESPConfig.MaxDist
         hpGui.Adornee=hrp
         local hpBg=Instance.new("Frame",hpGui)
         hpBg.Size=UDim2.new(1,0,1,0)
@@ -1079,7 +1091,7 @@ local function CreateESP(plr)
         nameGui.Size=UDim2.new(5,0,1,0)
         nameGui.StudsOffset=Vector3.new(0,3.3,0)
         nameGui.AlwaysOnTop=true
-        nameGui.MaxDistance=1500
+        nameGui.MaxDistance=ESPConfig.MaxDist
         nameGui.Adornee=hrp
         local nameLbl=Instance.new("TextLabel",nameGui)
         nameLbl.Size=UDim2.new(1,0,1,0)
@@ -1094,7 +1106,7 @@ local function CreateESP(plr)
         distGui.Size=UDim2.new(5,0,0.8,0)
         distGui.StudsOffset=Vector3.new(0,-3.3,0)
         distGui.AlwaysOnTop=true
-        distGui.MaxDistance=1500
+        distGui.MaxDistance=ESPConfig.MaxDist
         distGui.Adornee=hrp
         local distLbl=Instance.new("TextLabel",distGui)
         distLbl.Size=UDim2.new(1,0,1,0)
@@ -1109,8 +1121,8 @@ local function CreateESP(plr)
         local skLines={}
         for i=1,#bones do
             local line=Drawing.new("Line")
-            line.Thickness=1
-            line.Color=WH
+            line.Thickness=ESPConfig.SkeletonThickness
+            line.Color=ESPConfig.SkeletonColor
             line.Transparency=1
             line.Visible=false
             skLines[i]=line
@@ -1154,7 +1166,7 @@ RunService.RenderStepped:Connect(function()
             for _,l in ipairs(esp.sk) do l:Remove() end
             ESPObjects[plr]=nil
             continue
-        end
+       end
         local char=esp.char
         local hrp=char:FindFirstChild("HumanoidRootPart")
         local hum=char:FindFirstChildOfClass("Humanoid")
@@ -1168,50 +1180,61 @@ RunService.RenderStepped:Connect(function()
             continue
         end
         local dist=(Camera.CFrame.Position-hrp.Position).Magnitude
-        if not Config.ESP or dist>1500 then
+        if not Config.ESP or dist>ESPConfig.MaxDist then
             esp.box.Enabled=false
             esp.hp.Enabled=false
             esp.name.Enabled=false
             esp.dist.Enabled=false
             for _,l in ipairs(esp.sk) do l.Visible=false end
             continue
-      end
-        esp.box.Enabled=true
-        esp.box.Adornee=hrp
-        esp.hp.Enabled=true
-        esp.hp.Adornee=hrp
-        local hpRatio=math.clamp(hum.Health/hum.MaxHealth,0,1)
-        esp.hpFill.Size=UDim2.new(1,0,hpRatio,0)
-        esp.hpFill.Position=UDim2.new(0,0,1-hpRatio,0)
-        if hpRatio>0.6 then
-            esp.hpFill.BackgroundColor3=Color3.fromRGB(0,255,0)
-        elseif hpRatio>0.3 then
-            esp.hpFill.BackgroundColor3=Color3.fromRGB(255,200,0)
-        else
-            esp.hpFill.BackgroundColor3=Color3.fromRGB(255,0,0)
         end
-        esp.name.Enabled=true
+        esp.box.Enabled=ESPConfig.BoxEnabled
+        esp.box.Adornee=hrp
+        esp.boxStroke.Color=ESPConfig.BoxColor
+        if ESPConfig.HealthBarEnabled and hum then
+            esp.hp.Enabled=true
+            esp.hp.Adornee=hrp
+            local hpRatio=math.clamp(hum.Health/hum.MaxHealth,0,1)
+            esp.hpFill.Size=UDim2.new(1,0,hpRatio,0)
+            esp.hpFill.Position=UDim2.new(0,0,1-hpRatio,0)
+            if hpRatio>0.6 then
+                esp.hpFill.BackgroundColor3=Color3.fromRGB(0,255,0)
+            elseif hpRatio>0.3 then
+                esp.hpFill.BackgroundColor3=Color3.fromRGB(255,200,0)
+            else
+                esp.hpFill.BackgroundColor3=Color3.fromRGB(255,0,0)
+            end
+        else
+            esp.hp.Enabled=false
+        end
+        esp.name.Enabled=ESPConfig.ShowName
         esp.name.Adornee=hrp
-        esp.dist.Enabled=true
+        esp.dist.Enabled=ESPConfig.ShowDistance
         esp.dist.Adornee=hrp
         esp.distLbl.Text=math.floor(dist).."m"
-        for i,bone in ipairs(esp.bones) do
-            local p1=char:FindFirstChild(bone[1])
-            local p2=char:FindFirstChild(bone[2])
-            local line=esp.sk[i]
-            if p1 and p2 and line then
-                local s1,on1=Camera:WorldToViewportPoint(p1.Position)
-                local s2,on2=Camera:WorldToViewportPoint(p2.Position)
-                if on1 and on2 then
-                    line.From=Vector2.new(s1.X,s1.Y)
-                    line.To=Vector2.new(s2.X,s2.Y)
-                    line.Visible=true
-                else
+        if ESPConfig.SkeletonEnabled then
+            for i,bone in ipairs(esp.bones) do
+                local p1=char:FindFirstChild(bone[1])
+                local p2=char:FindFirstChild(bone[2])
+                local line=esp.sk[i]
+                if p1 and p2 and line then
+                    local s1,on1=Camera:WorldToViewportPoint(p1.Position)
+                    local s2,on2=Camera:WorldToViewportPoint(p2.Position)
+                    if on1 and on2 then
+                        line.From=Vector2.new(s1.X,s1.Y)
+                        line.To=Vector2.new(s2.X,s2.Y)
+                        line.Color=ESPConfig.SkeletonColor
+                        line.Thickness=ESPConfig.SkeletonThickness
+                        line.Visible=true
+                    else
+                        line.Visible=false
+                    end
+                elseif line then
                     line.Visible=false
                 end
-            elseif line then
-                line.Visible=false
             end
+        else
+            for _,l in ipairs(esp.sk) do l.Visible=false end
         end
     end
 end)
@@ -1338,4 +1361,4 @@ task.spawn(function()
     end)
 end)
 
-print("✅ FameSence Main loaded!")  
+print("✅ FameSence Main loaded!") 
